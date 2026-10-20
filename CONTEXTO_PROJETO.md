@@ -54,8 +54,10 @@ tags: [unity, game-dev, trabalho-faculdade]
 ### Controles
 | Tecla | Ação |
 |---|---|
-| W A S D | Mover |
-| Mouse | Câmera |
+| W / S | Andar para frente / para trás |
+| A / D | Girar o robô (esquerda / direita) |
+| Shift (segurar) | Correr |
+| Mouse | Câmera (por enquanto a câmera é fixa atrás do robô; órbita com mouse só se sobrar tempo) |
 | Espaço | Pular |
 | Botão esquerdo / E | Pulso Cinético (arremessa entulho) e interagir |
 | Esc | Pausa |
@@ -128,6 +130,9 @@ Os três temas (Ecorenovação, Tecnologia e Skills, mínimo de 3 itens cada), t
 | D12 | O código é documentado **enquanto é escrito** (`/// <summary>` em toda função) | O professor avalia isso no 1º bimestre. Deixar para o fim vira mutirão na véspera. |
 | D13 | Assets de terceiros: pacotes **grátis** da Unity Asset Store, free3d, Mixamo e TextureBox, **validados com o professor** | Exigência do enunciado. Evitar assets gerados por IA por enquanto (difíceis de validar e costumam vir pesados). |
 | D14 | Personagem: **Y Bot do Mixamo** pintado de amarelo (ou um robô humanoide grátis) | O Y Bot já tem visual robótico e já vem com rig, o que acelera tudo. |
+| D15 | Scripts no **estilo do curso Create with Code**: variáveis `public`, lógica no `Update`, `Translate`/`Rotate`/`AddForce` diretos | É o que o professor ensinou. Código mais simples de entender, explicar na apresentação e manter entre os três. |
+| D16 | Movimento estilo "tanque": **W/S anda com `Translate`, A/D gira com `Rotate`**, Shift corre, Espaço pula com `AddForce` | Deixa os critérios de movimentação e rotação bem visíveis e dispensa um script de câmera. |
+| D17 | Câmera: **Main Camera como filha do Player**, posicionada atrás e acima | Segue o robô sem precisar de script. Órbita com mouse fica como extra. |
 
 ---
 
@@ -180,8 +185,8 @@ Assets/
 
 ### Thiago: programação (cena `Cena_Teste_Thiago`, pasta `Scripts`, `Prefabs/Gameplay`)
 Testa tudo com cubos no lugar dos modelos até as partes dos outros ficarem prontas. Prioridade, em ordem:
-1. Movimento do jogador (`Translate` + `AddForce`, pulo) e câmera em 3ª pessoa
-2. Empurrão por contato e Pulso Cinético (`AddForce` + `AddTorque`, `Physics.OverlapSphere`)
+1. Movimento do jogador (`Translate` + `Rotate` + `AddForce`, pulo) e câmera filha do Player. **`PlayerMovement.cs` pronto e testado em 2026-10-20** (anda, corre, gira, pula só no chão, empurra caixote). Material `Art/Personagem/SemAtrito` no Capsule Collider. Tremida leve ao encostar em parede fixa: conhecida, correção com `SweepTest` pronta se incomodar.
+2. Empurrão por contato (física da Unity, sem código) e Pulso Cinético (`AddForce` + `AddTorque`, `Physics.OverlapSphere`). **`InteractionController.cs` pronto e testado em 2026-10-20.** Campos opcionais no Inspector: `impactParticlePrefab` (prefab de pedrinhas do Arthur) e `pulseSound`.
 3. `SpawnManager` (vetor de prefabs + `Random.Range` + spawn por função)
 4. Coleta de Bio-Filtros e sucata (inventário do jogador)
 5. Torre: depositar filtros, tecla E no console, condição de vitória
@@ -229,8 +234,8 @@ Testa tudo com cubos no lugar dos modelos até as partes dos outros ficarem pron
 ### Animator (`ScrapE_Animator`)
 | Parâmetro | Tipo | Quem escreve | Significado |
 |---|---|---|---|
-| `Speed` | Float | Script de movimento | Velocidade horizontal normalizada (0 parado, ~0.5 andando, 1 correndo) |
-| `IsGrounded` | Bool | Script de movimento | Está pisando no chão |
+| `Speed` | Float | `PlayerMovement` | 0 parado, até 0.5 andando, até 1 correndo (Shift) |
+| `IsGrounded` | Bool | `PlayerMovement` | Está pisando no chão (detectado por `OnCollisionEnter` com superfície embaixo) |
 | `Jump` | Trigger | Script de movimento | Disparado no momento do pulo |
 
 Transições: Idle↔Walking (Speed 0.1), Walking↔Running (Speed 0.6), Any State→Jump (trigger), Jump→Falling (fim da animação), Falling→Idle (IsGrounded = true). Desmarcar **Has Exit Time** nas de movimento.
@@ -344,8 +349,6 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [ ] Convidar Arthur e Rafael como colaboradores no GitHub
 - [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
-- [ ] Confirmar no lab 12 se a versão instalada lá é mesmo a 6000.0.8f1
-- [ ] Verificar o **Active Input Handling** (ver [[#10. Problemas conhecidos e dicas]])
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
 - [ ] Todo o desenvolvimento das seções 5.1, 5.2 e 5.3
 
@@ -360,7 +363,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - **Instalação da Unity falhou com "Prompt de elevação cancelado":** a janela de permissão de administrador ficou escondida ou expirou. Clique em Tentar novamente e aceite. Se não tiver permissão de admin, troque o local de instalação no Hub (Configurações → Instalações) para uma pasta dentro do usuário.
 
 ### Programação (Thiago)
-- **Input System:** o template criou `InputSystem_Actions.inputactions`, ou seja, o projeto pode estar configurado só com o Input System novo. Nesse caso, o `Input.GetAxis` antigo gera erro. Verificar em `Edit → Project Settings → Player → Other Settings → Active Input Handling`. **Decisão pendente:** usar `Both` (permite o `Input` antigo, mais simples) ou escrever com o Input System novo.
+- **Input System:** o `Active Input Handling` do projeto está em **`Both`** (conferido em 2026-10-20), então tanto o `Input` antigo (`Input.GetAxis`, `Input.GetKeyDown`) quanto o Input System novo funcionam. Não mudar essa configuração.
 - O jogador usa **Rigidbody** (o professor exige `AddForce`), então **não** usar CharacterController no mesmo objeto, e **não** usar `OnControllerColliderHit`, que só funciona com CharacterController. Para detectar contato, use `OnCollisionEnter` / `OnCollisionStay` / `OnTriggerEnter`.
 - No Rigidbody do jogador, travar rotação em X e Z (`Constraints → Freeze Rotation X e Z`) para o robô não tombar.
 - Para dano de detrito em queda, olhar `collision.relativeVelocity.magnitude` para não dar dano em simples esbarrão.
@@ -402,6 +405,9 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-20 | Thiago | `InteractionController.cs` (Pulso Cinético) pronto e testado; `PlayerMovement` com `OnCollisionStay` e zerando velocidade horizontal
+- 2026-10-20 | Thiago | `PlayerMovement.cs` escrito no estilo Create with Code (D15, D16, D17); Shift adicionado para correr
+- 2026-10-20 | Thiago | Conferido: Active Input Handling em Both; estrutura pronta para os outros clonarem
 - 2026-10-20 | Thiago | Tags criadas no projeto; arquivo de contexto criado
 - 2026-10-20 | Thiago | Pastas e cenas criadas; decidido não usar a pasta `_Projeto` (D8)
 - 2026-10-20 | Thiago | Decidido trabalhar sem branches, todos na `main` (D5)
