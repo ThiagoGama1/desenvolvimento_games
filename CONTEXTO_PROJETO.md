@@ -48,7 +48,7 @@ tags: [unity, game-dev, trabalho-faculdade]
   3. **Leito Fluvial Seco.** Área central com poças de lodo, barris de contrapeso e os pontos de spawn aleatório dos filtros.
   4. **Base da Represa e Torre.** Comporta com válvula giratória e o console de ativação.
 - **Vitória:** 5 filtros na torre + 3 entulhos removidos + torre ativada. Toca a explosão de partículas verdes, a névoa some, aparece a Tela de Vitória com a pontuação.
-- **Derrota:** HP chega a 0 (lodo tóxico tira 10 HP/s, detrito em queda tira 25 HP) ou o Eco-Timer zera (só se estiver ligado). Aparece a Tela de Game Over com o botão Reiniciar.
+- **Derrota:** HP chega a 0 (lodo tóxico tira 10 HP/s, detrito em queda tira 25 HP) ou o Eco-Timer de **3 minutos** zera (só se estiver ligado). Aparece a Tela de Game Over com o botão Reiniciar.
 - **Pontuação:** +100 por sucata, +1000 por concluir, +10 por segundo restante no Eco-Timer.
 
 ### Controles
@@ -133,6 +133,7 @@ Os três temas (Ecorenovação, Tecnologia e Skills, mínimo de 3 itens cada), t
 | D15 | Scripts no **estilo do curso Create with Code**: variáveis `public`, lógica no `Update`, `Translate`/`Rotate`/`AddForce` diretos | É o que o professor ensinou. Código mais simples de entender, explicar na apresentação e manter entre os três. |
 | D16 | Movimento estilo "tanque": **W/S anda com `Translate`, A/D gira com `Rotate`**, Shift corre, Espaço pula com `AddForce` | Deixa os critérios de movimentação e rotação bem visíveis e dispensa um script de câmera. |
 | D17 | Câmera: **Main Camera como filha do Player**, posicionada atrás e acima | Segue o robô sem precisar de script. Órbita com mouse fica como extra. |
+| D18 | Eco-Timer com **3 minutos** | O `MainMenuController` do Rafael já usava 3 minutos; foi mais simples ajustar o GDD (seções 3.1 e 3.7) do que o código. |
 
 ---
 
@@ -369,6 +370,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] `HUD_Canvas.prefab` pronto em `Prefabs/UI` (`BarraHP`, `TextoFiltros`, `TextoSucata`, `TextoTimer` e painéis `PainelPausa`, `PainelVitoria`, `PainelGameOver`)
 - [x] `MenuPrincipal.unity` e `MainMenuController.cs` prontos (vitrine 3D giratória do Scrap-E, Iniciar, Controles, Eco-Timer e Sair)
 - [x] `Cena_Teste_Rafael.unity` montada e integrada com `PlayerMovement`, `InteractionController`, `ScrapE` e `HUD_Canvas`
+- [x] Parte do Rafael testada na Unity pelo Thiago (2026-10-20): `MenuPrincipal`, `Cena_Teste_Rafael`, `ScrapE` e animações funcionando
+- [x] `ScrapE.prefab` corrigido: ID reservado `100100000` trocado e tag `Player` removida (fica só na cápsula)
 - [x] `EditorBuildSettings.asset` configurado com `MenuPrincipal` (índice 0) e `Nivel1` (índice 1)
 
 ### Pendente
@@ -385,12 +388,16 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 ## 10. Problemas conhecidos e dicas
 
 ### Gerais
+- **Arquivos da Unity gerados por IA fora do editor** (prefabs, cenas, `.anim`, `.controller` escritos direto em texto) podem ter erros que só aparecem ao abrir na Unity. Já aconteceu: o `ScrapE.prefab` veio com o ID `100100000`, que a Unity reserva, e gerou o erro *"File contains the same file identifier (100100000) for multiple object types"*. **Regra:** depois de gerar qualquer arquivo assim, abrir na Unity, olhar o Console e dar Play antes de commitar. Ao escolher IDs (`&número`) num arquivo YAML da Unity, não usar `100100000` nem números "redondos" que possam colidir.
 - **Objeto rosa** depois de importar um asset: o material não é do URP. Use `Window → Rendering → Render Pipeline Converter`, marque **Material Upgrade** e clique em **Convert**.
 - **Não mexer em `Assets/Settings`.** É a configuração do URP.
 - **Abrir o projeto pela pasta `EcoScrapper`**, não pela raiz do repositório.
 - **Instalação da Unity falhou com "Prompt de elevação cancelado":** a janela de permissão de administrador ficou escondida ou expirou. Clique em Tentar novamente e aceite. Se não tiver permissão de admin, troque o local de instalação no Hub (Configurações → Instalações) para uma pasta dentro do usuário.
 
 ### Programação (Thiago)
+- **UI usa o `Text` antigo da Unity** (`UnityEngine.UI.Text`), não TextMeshPro. Os scripts que mexem no HUD devem usar esse tipo.
+- **`MainMenuController` (Rafael) já cuida de:** botões Reiniciar e Menu Principal do HUD (`ReiniciarJogo()`, `CarregarMenuPrincipal()`), tecla **R** para reiniciar, `Time.timeScale` voltando a 1 ao trocar de cena, e a escolha do Eco-Timer na variável estática `MainMenuController.useEcoTimer`. O `UIManager` não deve repetir isso; falta só o `BotaoContinuar`, a pausa com Esc e atualizar os textos.
+- **`Nivel1` precisa de um `EventSystem`** (GameObject → UI → Event System) para os botões do HUD funcionarem.
 - **Input System:** o `Active Input Handling` do projeto está em **`Both`** (conferido em 2026-10-20), então tanto o `Input` antigo (`Input.GetAxis`, `Input.GetKeyDown`) quanto o Input System novo funcionam. Não mudar essa configuração.
 - O jogador usa **Rigidbody** (o professor exige `AddForce`), então **não** usar CharacterController no mesmo objeto, e **não** usar `OnControllerColliderHit`, que só funciona com CharacterController. Para detectar contato, use `OnCollisionEnter` / `OnCollisionStay` / `OnTriggerEnter`.
 - No Rigidbody do jogador, travar rotação em X e Z (`Constraints → Freeze Rotation X e Z`) para o robô não tombar.
@@ -414,11 +421,12 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 ## 11. GDD: situação do documento
 
 - **Autor original:** Rafael.
-- **Versão revisada:** `GDD - Eco-Scrapper Reclamation (revisado).pdf`, gerada em 2026-10-20. Está no PC do Thiago, na pasta `Downloads/Trabalho_2026-2`. Ainda não está no repositório.
+- **Versão revisada:** `GDD - Eco-Scrapper Reclamation (revisado).pdf`, gerada em 2026-10-20. Está na **raiz do repositório** (`GDD - Eco-Scrapper Reclamation (revisado).pdf`). Há uma cópia antiga no PC do Thiago em `Downloads/Trabalho_2026-2`, mas a do repositório é a oficial.
 - **O que foi adicionado ou mudado na revisão, para seguir o template do professor:**
   - 3.2: rotação com `Transform.Rotate`, separada do torque (filtros girando, válvula da comporta, orientação do robô)
   - 3.6: Combate e Conflito (sem combate direto, perigos ambientais com valores de dano)
   - 3.7: Opções do Jogo (Eco-Timer ligado/desligado)
+  - 3.1 e 3.7: Eco-Timer ajustado de 4 para **3 minutos** em 2026-10-20 (D18)
   - 3.8: Replay e Salvamento (sem save no nível 1, replay por botão e tecla R)
   - 3.9: Fluxo de Telas (diagrama + descrição de cada tela)
   - 6: Documentação do Código, **em branco até o fim do desenvolvimento**
@@ -433,6 +441,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-20 | Thiago | Parte do Rafael testada na Unity; `ScrapE.prefab` corrigido (ID reservado 100100000 e tag Player); alerta sobre arquivos gerados fora do editor na seção 10
+- 2026-10-20 | Thiago | Branch do Rafael revisada e mesclada na `main`; Eco-Timer fixado em 3 minutos (D18); GDD revisado movido para a raiz do repositório; notas de integração com o `MainMenuController` e o `HUD_Canvas`
 - 2026-10-20 | Rafael | `MenuPrincipal.unity`, `Cena_Teste_Rafael.unity`, `MainMenuController.cs` e `EditorBuildSettings.asset` (`MenuPrincipal` índice 0, `Nivel1` índice 1) prontos e testados; criado `GUIA_RAFAEL.md`
 - 2026-10-20 | Rafael | `HUD_Canvas.prefab` criado em `Prefabs/UI` com todos os objetos e painéis desativados do contrato da seção 6 (`BarraHP`, `TextoFiltros`, `TextoSucata`, `TextoTimer`, `PainelPausa`, `PainelVitoria`, `PainelGameOver`)
 - 2026-10-20 | Rafael | `ScrapE.prefab` (`Prefabs/Personagem`), `ScrapE_Animator.controller` com as 5 animações (`Idle`, `Walking`, `Running`, `Jump`, `FallingIdle`) e utilitário `MixamoSetupUtility.cs` prontos
