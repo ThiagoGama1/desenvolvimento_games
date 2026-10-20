@@ -195,6 +195,23 @@ Testa tudo com cubos no lugar dos modelos até as partes dos outros ficarem pron
 8. Ligar HUD, painéis e botões do Rafael aos scripts (`SceneManager.LoadScene` no Reiniciar)
 9. Extras se sobrar tempo: Eco-Timer, emotes e cheat E-C-O
 
+### Dependências entre as partes
+O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para fazer e testar com cubos na `Cena_Teste_Thiago`; o que vem dos outros só é encaixado depois, arrastando no Inspector, sem mudar código.
+
+| Script / tarefa do Thiago | Precisa de | De quem | Bloqueia? |
+|---|---|---|---|
+| `SpawnManager` | Pontos `SpawnPoint_01...` na `Nivel1` | Arthur | Não (testa com objetos vazios próprios) |
+| `Rotator` + `PlayerInventory` | Nada | | Não |
+| `PurifierTower` | Modelo da torre e prefab `Particula_Purificacao` | Arthur | Não (testa com cubo) |
+| `PlayerHealth` | Poças de lodo com `ToxicSlime` | Arthur | Não (testa com cubo marcado) |
+| `GameManager` + `UIManager` | Prefab `HUD_Canvas` com textos, painéis e botões | Rafael | **Sim**, a parte de UI só fecha com o canvas |
+| Animações no robô | Prefab `ScrapE` com `ScrapE_Animator` | Rafael | **Sim**, para ver as animações (o código já envia `Speed`, `IsGrounded`, `Jump`) |
+| Partícula e som do pulso | Prefab `Particula_Pedrinhas` e um som | Arthur | Não (1 minuto: arrastar no `InteractionController`) |
+
+**Prioridade de ajuda:** o Rafael, porque o `HUD_Canvas` e o `ScrapE` são os únicos bloqueios reais.
+
+**Como ligar o `ScrapE` quando chegar (~15 min):** arrastar o `ScrapE` para dentro do `Player` (como filho), desativar o Mesh Renderer da cápsula, arrastar o `ScrapE` para o campo `animator` do `PlayerMovement`, alinhar os pés com a base da cápsula e ajustar o Capsule Collider ao tamanho do modelo.
+
 ### Arthur: cenário (cena `Nivel1`, `Art/Cenario`, `Prefabs/Cenario`)
 1. Terreno (Terrain): os 4 setores, ravina, leito do rio e platôs
 2. Camadas de textura no terreno: solo árido, cascalho, rocha, lodo
@@ -343,14 +360,19 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] Pastas criadas (`Scripts`, `Prefabs/*`, `Art/*`)
 - [x] Cenas criadas (`Nivel1`, `MenuPrincipal`, `Cena_Teste_Thiago`, `Cena_Teste_Rafael`)
 - [x] Tags criadas (`EcoItem`, `ScrapCoin`, `HeavyDebris`, `ToxicSlime`, `PurifierTrigger`)
+- [x] Push da estrutura de pastas, cenas e tags
+- [x] `Cena_Teste_Thiago` montada (cápsula Player com câmera filha, chão, Caixa, Degrau, Plataforma e Caixote com `HeavyDebris`)
+- [x] `PlayerMovement.cs` pronto e testado
+- [x] `InteractionController.cs` (Pulso Cinético) pronto e testado
 
 ### Pendente
-- [ ] Push da estrutura de pastas, cenas e tags
 - [ ] Convidar Arthur e Rafael como colaboradores no GitHub
 - [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
-- [ ] Todo o desenvolvimento das seções 5.1, 5.2 e 5.3
+- [ ] Thiago: `SpawnManager`, `Rotator` + `PlayerInventory`, `PurifierTower`, `PlayerHealth`, `GameManager` + `UIManager`
+- [ ] Arthur: tudo da seção 5 (cenário)
+- [ ] Rafael: tudo da seção 5 (personagem e UI)
 
 ---
 
@@ -405,6 +427,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-20 | Thiago | Status atualizado; adicionada a tabela de dependências entre as partes
 - 2026-10-20 | Thiago | `InteractionController.cs` (Pulso Cinético) pronto e testado; `PlayerMovement` com `OnCollisionStay` e zerando velocidade horizontal
 - 2026-10-20 | Thiago | `PlayerMovement.cs` escrito no estilo Create with Code (D15, D16, D17); Shift adicionado para correr
 - 2026-10-20 | Thiago | Conferido: Active Input Handling em Both; estrutura pronta para os outros clonarem
