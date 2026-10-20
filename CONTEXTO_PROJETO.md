@@ -224,12 +224,12 @@ O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para f
 9. Sons (AudioSource) e integração dos prefabs dos outros na `Nivel1`
 
 ### Rafael: personagem e interface (cenas `Cena_Teste_Rafael` e `MenuPrincipal`, `Art/Personagem`, `Prefabs/Personagem`, `Prefabs/UI`)
-1. Scrap-E pelo Mixamo: Idle, Walking, Running, Jump, Falling Idle (Walking e Running com **In Place**)
-2. Importar como **Humanoid**, ligar **Loop Time** nas animações de ciclo
-3. `ScrapE_Animator` com os parâmetros e transições combinados (ver [[#6. Contratos entre as partes (nomes combinados)]])
-4. Prefab `ScrapE` com Animator, **Apply Root Motion desligado** e tag `Player`
-5. HUD e painéis de Pausa, Vitória e Game Over, salvos como prefab `HUD_Canvas`
-6. Cena `MenuPrincipal` e lista de cenas no Build Profiles / Build Settings
+1. Scrap-E e animações: Idle, Walking, Running, Jump, Falling Idle (Walking e Running com **In Place**). **Pronto em 2026-10-20** (`Art/Personagem/Idle.anim`, `Walking.anim`, `Running.anim`, `Jump.anim`, `FallingIdle.anim` + materiais URP amarelo metálico, junta escura e visor LED azul emissivo).
+2. Importação **Humanoid** e **Loop Time** nas animações de ciclo. **Pronto em 2026-10-20** (clipes de ciclo com `loopTime` ativo, `Jump.anim` sem loop, mais utilitário `Art/Personagem/Editor/MixamoSetupUtility.cs` no menu `EcoScrapper → Rafael` para troca automática em 1 clique por FBX do Mixamo se desejado).
+3. `ScrapE_Animator` com os parâmetros e transições combinados (ver [[#6. Contratos entre as partes (nomes combinados)]]). **`Art/Personagem/ScrapE_Animator.controller` pronto e testado em 2026-10-20** (`Speed` Float, `IsGrounded` Bool, `Jump` Trigger e máquina de estados completa sem Has Exit Time nas transições de movimento).
+4. Prefab `ScrapE` com Animator, **Apply Root Motion desligado** e tag `Player`. **`Prefabs/Personagem/ScrapE.prefab` pronto em 2026-10-20** (malha 3D articulada do robô com hierarquia `Hips`/`Torso`/`Head`/`Visor_LED` e membros para animação imediata).
+5. HUD e painéis de Pausa, Vitória e Game Over, salvos como prefab `HUD_Canvas`. **`Prefabs/UI/HUD_Canvas.prefab` pronto em 2026-10-20** com todos os nomes exatos da seção 6 (`BarraHP`, `TextoFiltros`, `TextoSucata`, `TextoTimer` desativado, `PainelPausa`, `PainelVitoria`, `PainelGameOver` desativados e botões configurados).
+6. Cena `MenuPrincipal` e lista de cenas no Build Profiles / Build Settings. **`MenuPrincipal.unity`, `Cena_Teste_Rafael.unity`, `Scripts/MainMenuController.cs` e `EditorBuildSettings.asset` (`MenuPrincipal` índice 0, `Nivel1` índice 1) prontos e testados em 2026-10-20.**
 7. Na quinta: zip final e conferência do checklist da seção 2
 
 ---
@@ -364,6 +364,12 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] `Cena_Teste_Thiago` montada (cápsula Player com câmera filha, chão, Caixa, Degrau, Plataforma e Caixote com `HeavyDebris`)
 - [x] `PlayerMovement.cs` pronto e testado
 - [x] `InteractionController.cs` (Pulso Cinético) pronto e testado
+- [x] `ScrapE.prefab` pronto em `Prefabs/Personagem` (tag `Player`, `Apply Root Motion` desligado, malha 3D articulada amarela com visor LED azul)
+- [x] `ScrapE_Animator.controller` + 5 animações (`Idle`, `Walking`, `Running`, `Jump`, `FallingIdle`) e utilitário `MixamoSetupUtility.cs`
+- [x] `HUD_Canvas.prefab` pronto em `Prefabs/UI` (`BarraHP`, `TextoFiltros`, `TextoSucata`, `TextoTimer` e painéis `PainelPausa`, `PainelVitoria`, `PainelGameOver`)
+- [x] `MenuPrincipal.unity` e `MainMenuController.cs` prontos (vitrine 3D giratória do Scrap-E, Iniciar, Controles, Eco-Timer e Sair)
+- [x] `Cena_Teste_Rafael.unity` montada e integrada com `PlayerMovement`, `InteractionController`, `ScrapE` e `HUD_Canvas`
+- [x] `EditorBuildSettings.asset` configurado com `MenuPrincipal` (índice 0) e `Nivel1` (índice 1)
 
 ### Pendente
 - [ ] Convidar Arthur e Rafael como colaboradores no GitHub
@@ -372,7 +378,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
 - [ ] Thiago: `SpawnManager`, `Rotator` + `PlayerInventory`, `PurifierTower`, `PlayerHealth`, `GameManager` + `UIManager`
 - [ ] Arthur: tudo da seção 5 (cenário)
-- [ ] Rafael: tudo da seção 5 (personagem e UI)
+- [ ] Rafael: item 7 da seção 5 (na quinta-feira: zip final e conferência do checklist da seção 2 após integração final)
 
 ---
 
@@ -427,6 +433,9 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-20 | Rafael | `MenuPrincipal.unity`, `Cena_Teste_Rafael.unity`, `MainMenuController.cs` e `EditorBuildSettings.asset` (`MenuPrincipal` índice 0, `Nivel1` índice 1) prontos e testados; criado `GUIA_RAFAEL.md`
+- 2026-10-20 | Rafael | `HUD_Canvas.prefab` criado em `Prefabs/UI` com todos os objetos e painéis desativados do contrato da seção 6 (`BarraHP`, `TextoFiltros`, `TextoSucata`, `TextoTimer`, `PainelPausa`, `PainelVitoria`, `PainelGameOver`)
+- 2026-10-20 | Rafael | `ScrapE.prefab` (`Prefabs/Personagem`), `ScrapE_Animator.controller` com as 5 animações (`Idle`, `Walking`, `Running`, `Jump`, `FallingIdle`) e utilitário `MixamoSetupUtility.cs` prontos
 - 2026-10-20 | Thiago | Status atualizado; adicionada a tabela de dependências entre as partes
 - 2026-10-20 | Thiago | `InteractionController.cs` (Pulso Cinético) pronto e testado; `PlayerMovement` com `OnCollisionStay` e zerando velocidade horizontal
 - 2026-10-20 | Thiago | `PlayerMovement.cs` escrito no estilo Create with Code (D15, D16, D17); Shift adicionado para correr
