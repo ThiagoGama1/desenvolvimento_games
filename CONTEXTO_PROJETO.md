@@ -194,7 +194,8 @@ Testa tudo com cubos no lugar dos modelos até as partes dos outros ficarem pron
 6. HP: **`PlayerHealth.cs` pronto e testado em 2026-10-21** (no `Player`). Lodo: 10 HP/s via `OnTriggerStay`, com conferência de sobreposição real (`bounds.Intersects`) para ignorar avisos falsos da Unity. Detrito: 25 HP quando um `HeavyDebris` **em movimento** (velocidade do próprio Rigidbody > 5) bate no robô. Cada dano aparece no Console com a causa. `Heal()` pronto para o cheat. Campo opcional `deathEffectPrefab`.
 7. Rotação dos filtros (`Transform.Rotate`): **`Rotator.cs` pronto em 2026-10-20**, usado no `BioFiltro` e na `SucataCoin`. Válvula da comporta: pendente (opcional).
 8. HUD e estado do jogo: **`GameManager.cs` e `UIManager.cs` prontos e testados em 2026-10-21.** `GameManager` (objeto próprio, `GameManager.Instance`): Esc pausa, Eco-Timer de 180 s se ligado no menu, `Victory()` (espera 2 s e mostra a tela), `GameOver()`, pontuação (1000 + 100 por sucata + 10 por segundo restante no Eco-Timer); desliga `PlayerMovement` e `InteractionController` (vetor `playerControls`) quando o jogo para. `UIManager` (no `HUD_Canvas`): acha os elementos pelos nomes do contrato com `transform.Find`, atualiza textos e barra, liga o `BotaoContinuar`. Reiniciar e Menu continuam com o `MainMenuController` do Rafael.
-9. Extras: Eco-Timer ✅ (no `GameManager`). Cheat E-C-O e emotes: pendentes, opcionais.
+9. Extras: Eco-Timer ✅ (no `GameManager`). Cheat E-C-O ✅ **`CheatCode.cs` pronto e testado em 2026-10-21** (no `Player`: E→C→O em até 1,5 s entre teclas enche a vida com `Heal()` e dobra `speed`/`runSpeed` por 5 s via corrotina). Emotes G/H: não serão feitos (dependem de animações novas).
+10. **Prefab `Prefabs/Gameplay/SIstemaDeJogo`** (o nome ficou com "I" maiúsculo) pronto em 2026-10-21: contém `Player` (com `ScrapE`, `Main Camera` e todos os scripts do jogador, inclusive `CheatCode`), `GameManager`, `HUD_Canvas` com `UIManager`, `EventSystem` e `SpawnManager`, com todas as ligações internas feitas. **Na `Nivel1`: arrastar o prefab, apagar a `Main Camera` padrão da cena (o prefab já traz a câmera do jogador; manter a `Directional Light`), e ligar os pontos de spawn da `Nivel1` nos dois campos do `SpawnManager`** (prefab não guarda referência a objetos de fora dele). Também viraram prefabs: `Torre` (`Prefabs/Gameplay`, trigger + `PurifierTrigger` + `PurifierTower`) e `Lodo` (`Prefabs/Gameplay`, trigger + `ToxicSlime`).
 
 ### Dependências entre as partes
 O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para fazer e testar com cubos na `Cena_Teste_Thiago`; o que vem dos outros só é encaixado depois, arrastando no Inspector, sem mudar código.
@@ -366,6 +367,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] `PlayerMovement.cs` pronto e testado
 - [x] `InteractionController.cs` (Pulso Cinético) pronto e testado
 - [x] `ScrapE` integrado ao `Player` na `Cena_Teste_Thiago`, com animações funcionando
+- [x] Prefab `SIstemaDeJogo`, prefabs `Torre` e `Lodo`, `CheatCode.cs` e seção 6 do GDD preenchida com os 11 scripts (2026-10-21)
 - [x] `PurifierTower.cs`, `PlayerHealth.cs`, `GameManager.cs` e `UIManager.cs` prontos e testados (2026-10-21) na `Cena_Teste_Thiago`: HUD, pausa, Continuar, Game Over no lodo, Reiniciar, Menu e vitória na torre funcionando. **Todo o código da lista do Thiago está pronto.**
 - [x] `SpawnManager.cs`, `Rotator.cs` e `PlayerInventory.cs` prontos e testados; prefabs `BioFiltro` (tag `EcoItem`, verde) e `SucataCoin` (tag `ScrapCoin`) em `Prefabs/Gameplay`; 8 pontos de spawn na cena de teste
 - [x] `ScrapE.prefab` pronto em `Prefabs/Personagem` (tag `Player`, `Apply Root Motion` desligado, malha 3D articulada amarela com visor LED azul)
@@ -382,7 +384,6 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
-- [ ] Thiago (21/10): prefab do sistema de jogo para a `Nivel1`, seção 6 do GDD, cheat E-C-O (opcional)
 - [ ] Junção na `Nivel1` (depende do cenário do Arthur; plano B: Thiago monta uma `Nivel1` simples)
 - [ ] Arthur: **nenhum commit até 21/10 14h**. Confirmar o andamento da `Nivel1` (é o único bloqueio da junção)
 - [ ] Arthur: tudo da seção 5 (cenário)
@@ -442,7 +443,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
   - 7: Inteligência Artificial (inimigos, NPCs e IA de suporte)
   - 8: Requisitos Técnicos (era a 7)
   - 9: Arte do Jogo (estilo e tabela dos assets principais)
-- **Falta fazer antes da entrega:** preencher a seção 6 com os scripts reais e conferir se o que está no GDD bate com o jogo construído. O que for cortado precisa ser marcado como "planejado".
+- **Seção 6 preenchida em 2026-10-21:** padrão de documentação, tabela com os 11 scripts (autor, função e critérios atendidos) e o código completo de cada um (6.2 a 6.12). O GDD tem 42 páginas. **Se algum script mudar, atualizar a seção 6.**
+- **Falta fazer antes da entrega:** conferir se o que está no GDD bate com o jogo construído (o que for cortado, como os emotes G/H, precisa ser marcado como "planejado").
 
 ---
 
@@ -450,6 +452,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Thiago | Prefab `SIstemaDeJogo` (mais `Torre` e `Lodo`), `CheatCode.cs` (E-C-O) e seção 6 do GDD com os 11 scripts; emotes G/H descartados
 - 2026-10-21 | Thiago | `PurifierTower`, `PlayerHealth`, `GameManager` e `UIManager` prontos e testados; todo o código do Thiago concluído; notas de montagem de cena na seção 10
 - 2026-10-21 | Thiago | Status atualizado: `SpawnManager` (pontos compartilhados entre filtros e sucatas), `Rotator`, `PlayerInventory` e integração do `ScrapE` prontos; Arthur sem commits até agora
 - 2026-10-20 | Thiago | Parte do Rafael testada na Unity; `ScrapE.prefab` corrigido (ID reservado 100100000 e tag Player); alerta sobre arquivos gerados fora do editor na seção 10
