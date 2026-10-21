@@ -385,9 +385,16 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] Junção do `SIstemaDeJogo` na `Nivel1` feita (campos de partícula, som e spawn preenchidos na cena)
 - [x] Pacotes grátis da Asset Store importados: Low Poly Rock Pack e Low Poly Cliff Pack (Broken Vector), Stylized Low Poly Rocks e Low-Poly Simple Nature Pack (JustCreate), Dry Trees, Low-poly Industrial Pack (Donthrukat), PBR Barrels and Crates, Garage Props Set; materiais convertidos para URP pelo script
 
+- [x] **Parte do Arthur testada pelo Thiago (2026-10-21, noite), do menu até a vitória.** Ajustes feitos depois do teste:
+  - pedras do canal (`Entulho_Canal_0/1/2`) de 8 kg para **3 kg**, porque o Pulso não conseguia tirá-las do lugar;
+  - `Arco_Rochoso` de z = 5,5 para **z = 0**, porque a câmera nascia dentro dele;
+  - `Particula_Purificacao` menor (Start Speed 2–4, Lifetime 1,2–1,6; `Petalas` com Speed 1–2), para a explosão não cobrir a câmera;
+  - fundo do `PainelVitoria` com alpha 100/255 (antes 230), para o vale purificado aparecer atrás da mensagem;
+  - `PlayerMovement`: `CanMove` com `SweepTest` (o robô não atravessa mais as paredes do cânion nem treme ao encostar) e `Respawn` (se cair abaixo de `fallLimitY = -1`, volta ao início).
+  - `MontarNivel1.cs` documentado (46 funções) e sincronizado com esses valores (pedras, arco e partícula).
+- [x] GDD final (2026-10-21): seção 4.1 com os 101 assets reais, controles e câmera atualizados (5.1 a 5.4), seção 6 com o `PlayerMovement` novo e citação do `MontarNivel1`, seção 9.2 com a arte real e **seção 10 nova, "Estado da Implementação"** (implementado x planejado para o 2º bimestre). 48 páginas.
+
 ### Pendente
-- [ ] Convidar Arthur e Rafael como colaboradores no GitHub
-- [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
 - [ ] Rafael: item 7 da seção 5 (na quinta-feira: zip final e conferência do checklist da seção 2 após integração final)
@@ -404,6 +411,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - **Instalação da Unity falhou com "Prompt de elevação cancelado":** a janela de permissão de administrador ficou escondida ou expirou. Clique em Tentar novamente e aceite. Se não tiver permissão de admin, troque o local de instalação no Hub (Configurações → Instalações) para uma pasta dentro do usuário.
 
 ### Programação (Thiago)
+- **Translate x paredes do terreno:** o `Translate` move sem consultar a física. Contra as paredes íngremes do cânion, o robô entrava na "casca" do terreno e caía por baixo do mapa. Resolvido com `CanMove` (`Rigidbody.SweepTest`) no `PlayerMovement`. Paredes e encostas com normal.y < 0.5 bloqueiam; objetos com Rigidbody e rampas deixam passar. Se o robô travar em alguma pedra baixa no caminho principal, a causa é essa regra.
+- **Tela verde na vitória:** é o fundo do `PainelVitoria`, um painel de tela cheia com cor semitransparente, e não um bug.
 - **Montagem de uma cena jogável** (feita na `Cena_Teste_Thiago`, repetir na `Nivel1`): `Player` com `PlayerMovement`, `InteractionController`, `PlayerInventory`, `PlayerHealth` e o `ScrapE` + `Main Camera` como filhos; `HUD_Canvas` com `UIManager` (Player Inventory e Player Health = `Player`); `EventSystem`; objeto `GameManager` (Player Inventory = `Player`, UI Manager = `HUD_Canvas`, Player Controls = `PlayerMovement` e `InteractionController` do `Player`); `SpawnManager` com os pontos; torre com trigger + tag `PurifierTrigger` + `PurifierTower`.
 - **Objetos criados pelo menu GameObject nascem onde a vista da cena está olhando**, não no chão (já aconteceu com o `Lodo`, que ficou flutuando a 5 m). Sempre conferir a Position depois de criar.
 - **Arrastar um componente para outro objeto no Inspector:** travar o Inspector do destino no cadeado e abrir o objeto de origem com botão direito → **Properties...**
@@ -422,6 +431,9 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - Animações importadas sem **Copy From Other Avatar** ficam tortas ou não tocam.
 
 ### Cenário (Arthur)
+- **Força do Pulso x massa:** o Pulso dá um impulso fixo de 12. Um objeto de 8 kg ganha só 1,5 m/s e quase não sai do lugar; com 3 kg, ele é arremessado. Entulhos que o jogador **precisa** tirar do caminho devem ter no máximo uns 5 kg.
+- **Câmera e cenário:** a câmera fica 5 m atrás e 2 m acima do robô. Nada grande pode ficar logo atrás do ponto onde o jogador nasce.
+- **Partículas grandes perto do jogador** cobrem a câmera e pintam a tela. Explosões devem acontecer longe ou ser pequenas.
 - Partículas de impacto e de purificação precisam ser **prefabs** com **Looping desligado e Play On Awake LIGADO**. O código só cria o objeto (`Instantiate`) e não chama `Play()`, então a partícula precisa começar sozinha. (Corrigido em 2026-10-21: a orientação anterior, que dizia Play On Awake desligado, estava errada; o Guia do Grupo em PDF ainda tem a versão antiga.)
 - Poça de lodo sem **Is Trigger** vira chão sólido, e o dano não funciona.
 
@@ -447,7 +459,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
   - 8: Requisitos Técnicos (era a 7)
   - 9: Arte do Jogo (estilo e tabela dos assets principais)
 - **Seção 6 preenchida em 2026-10-21:** padrão de documentação, tabela com os 11 scripts (autor, função e critérios atendidos) e o código completo de cada um (6.2 a 6.12). O GDD tem 42 páginas. **Se algum script mudar, atualizar a seção 6.**
-- **Falta fazer antes da entrega:** conferir se o que está no GDD bate com o jogo construído (o que for cortado, como os emotes G/H, precisa ser marcado como "planejado").
+- **Revisão final em 2026-10-21 (noite):** o GDD foi alinhado com o jogo construído. A seção 4.1 lista os 101 assets reais (Apêndice B do `GUIA_ARTHUR.md`), as seções 3.4, 5.1, 5.2, 5.3, 5.4 e 9.2 descrevem o que existe, e a **seção 10** separa o que foi implementado do que ficou planejado para o 2º bimestre (diálogos da ARIA, fauna reativa, puzzles de contrapeso e de sementes, válvula giratória, transformação ambiental completa, órbita de câmera, emotes, prompts de ajuda, degrau do tutorial e animações do Mixamo). **Se algo do jogo mudar, atualizar a seção 10 e a 6.**
 
 ---
 
@@ -455,6 +467,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Thiago | Teste completo da `Nivel1`; ajustes (pedras do canal 3 kg, arco z = 0, explosão menor, painel de vitória mais transparente, `SweepTest` + `Respawn` no `PlayerMovement`); `MontarNivel1.cs` documentado e sincronizado; GDD final com a lista real de assets e a seção 10 (Estado da Implementação)
 - 2026-10-21 | Arthur | Cenário da `Nivel1` montado pelo script de editor `Art/Cenario/Editor/MontarNivel1.cs` (menu EcoScrapper → Montar Nivel1); 101 assets diferentes, 8 pacotes grátis da Asset Store, sons e partículas; Apêndice B do `GUIA_ARTHUR.md` preenchido. Atenção: rodar o menu de novo recria os prefabs de `Prefabs/Cenario` e a cena
 - 2026-10-21 | Thiago | Criado `GUIA_ARTHUR.md` (guia de tarefa do cenário da `Nivel1`); corrigida a orientação das partículas criadas pelo código (Play On Awake ligado)
 - 2026-10-21 | Thiago | Prefab `SIstemaDeJogo` (mais `Torre` e `Lodo`), `CheatCode.cs` (E-C-O) e seção 6 do GDD com os 11 scripts; emotes G/H descartados

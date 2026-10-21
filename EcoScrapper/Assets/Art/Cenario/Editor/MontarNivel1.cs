@@ -442,8 +442,8 @@ public static class MontarNivel1
         main.loop = false;
         main.playOnAwake = true;
         main.duration = 2f;
-        main.startLifetime = new ParticleSystem.MinMaxCurve(1.6f, 2.2f);
-        main.startSpeed = new ParticleSystem.MinMaxCurve(5f, 10f);
+        main.startLifetime = new ParticleSystem.MinMaxCurve(1.2f, 1.6f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(2f, 4f); // alcance de ~6 m: não chega na câmera do jogador
         main.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.6f);
         main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.4f, 1f, 0.5f), new Color(0.75f, 1f, 0.6f));
         main.gravityModifier = 0.1f;
@@ -467,7 +467,7 @@ public static class MontarNivel1
         main2.playOnAwake = true;
         main2.duration = 2f;
         main2.startLifetime = new ParticleSystem.MinMaxCurve(2.5f, 3.5f);
-        main2.startSpeed = new ParticleSystem.MinMaxCurve(2f, 5f);
+        main2.startSpeed = new ParticleSystem.MinMaxCurve(1f, 2f);
         main2.startSize = new ParticleSystem.MinMaxCurve(0.15f, 0.3f);
         main2.gravityModifier = 0.25f;
         main2.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.8f, 0.9f), new Color(1f, 1f, 0.7f));
@@ -1981,7 +1981,7 @@ public static class MontarNivel1
         var fumacaPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabRoot + "/Fumaca.prefab");
 
         // ---------- Setor 1: Plataforma de Despertar (z 4–46)
-        Colocar("Arco_Rochoso", setor1, 50f, 5.5f, 0f, 1.1f);
+        Colocar("Arco_Rochoso", setor1, 50f, 0f, 0f, 1.1f); // em z = 0 para não ficar atrás da câmera do jogador
         Colocar("Rocha_Falesia_A", setor1, 39f, 14f, 30f);
         Colocar("Rocha_Falesia_B", setor1, 61f, 26f, 200f);
         Colocar("Drone_ARIA", setor1, 46f, 12f, 30f);
