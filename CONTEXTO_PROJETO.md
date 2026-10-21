@@ -188,11 +188,11 @@ Assets/
 Testa tudo com cubos no lugar dos modelos até as partes dos outros ficarem prontas. Prioridade, em ordem:
 1. Movimento do jogador (`Translate` + `Rotate` + `AddForce`, pulo) e câmera filha do Player. **`PlayerMovement.cs` pronto e testado em 2026-10-20** (anda, corre, gira, pula só no chão, empurra caixote). Material `Art/Personagem/SemAtrito` no Capsule Collider. Tremida leve ao encostar em parede fixa: conhecida, correção com `SweepTest` pronta se incomodar.
 2. Empurrão por contato (física da Unity, sem código) e Pulso Cinético (`AddForce` + `AddTorque`, `Physics.OverlapSphere`). **`InteractionController.cs` pronto e testado em 2026-10-20.** Campos opcionais no Inspector: `impactParticlePrefab` (prefab de pedrinhas do Arthur) e `pulseSound`.
-3. `SpawnManager` (vetor de prefabs + `Random.Range` + spawn por função)
-4. Coleta de Bio-Filtros e sucata (inventário do jogador)
+3. `SpawnManager` (vetor de prefabs + `Random.Range` + spawn por função). **Pronto e testado em 2026-10-20.** Filtros e sucatas dividem a mesma lista de pontos livres (`usedPoints`), então nenhum item nasce em cima do outro; pode usar os mesmos pontos nos dois campos do Inspector.
+4. Coleta de Bio-Filtros e sucata. **`PlayerInventory.cs` pronto e testado em 2026-10-20** (no `Player`; conta `filtersCollected` e `scrapCollected` pela tag ao encostar em trigger; `HasAllFilters()` para a torre). Por enquanto só conta e mostra no Console: o HUD e a vitória vêm com o `UIManager` e a `PurifierTower`.
 5. Torre: depositar filtros, tecla E no console, condição de vitória
 6. HP, dano do lodo, dano de detrito e game over
-7. Rotação dos filtros (`Transform.Rotate`) e válvula da comporta
+7. Rotação dos filtros (`Transform.Rotate`): **`Rotator.cs` pronto em 2026-10-20**, usado no `BioFiltro` e na `SucataCoin`. Válvula da comporta: pendente (opcional).
 8. Ligar HUD, painéis e botões do Rafael aos scripts (`SceneManager.LoadScene` no Reiniciar)
 9. Extras se sobrar tempo: Eco-Timer, emotes e cheat E-C-O
 
@@ -206,12 +206,12 @@ O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para f
 | `PurifierTower` | Modelo da torre e prefab `Particula_Purificacao` | Arthur | Não (testa com cubo) |
 | `PlayerHealth` | Poças de lodo com `ToxicSlime` | Arthur | Não (testa com cubo marcado) |
 | `GameManager` + `UIManager` | Prefab `HUD_Canvas` com textos, painéis e botões | Rafael | **Sim**, a parte de UI só fecha com o canvas |
-| Animações no robô | Prefab `ScrapE` com `ScrapE_Animator` | Rafael | **Sim**, para ver as animações (o código já envia `Speed`, `IsGrounded`, `Jump`) |
+| Animações no robô | Prefab `ScrapE` com `ScrapE_Animator` | Rafael | ✅ Resolvido em 2026-10-20: `ScrapE` integrado ao `Player` na `Cena_Teste_Thiago` |
 | Partícula e som do pulso | Prefab `Particula_Pedrinhas` e um som | Arthur | Não (1 minuto: arrastar no `InteractionController`) |
 
 **Prioridade de ajuda:** o Rafael, porque o `HUD_Canvas` e o `ScrapE` são os únicos bloqueios reais.
 
-**Como ligar o `ScrapE` quando chegar (~15 min):** arrastar o `ScrapE` para dentro do `Player` (como filho), desativar o Mesh Renderer da cápsula, arrastar o `ScrapE` para o campo `animator` do `PlayerMovement`, alinhar os pés com a base da cápsula e ajustar o Capsule Collider ao tamanho do modelo.
+**Como ligar o `ScrapE` (feito na `Cena_Teste_Thiago`, repetir na `Nivel1`):** arrastar o `ScrapE` para dentro do `Player` (como filho) na posição `0, -1, 0`, desativar o Mesh Renderer da cápsula e arrastar o `ScrapE` **da Hierarchy** (não da aba Project!) para o campo `animator` do `PlayerMovement`. Se arrastar da aba Project, o script manda os parâmetros para o arquivo do prefab e o robô fica parado no Idle.
 
 ### Arthur: cenário (cena `Nivel1`, `Art/Cenario`, `Prefabs/Cenario`)
 1. Terreno (Terrain): os 4 setores, ravina, leito do rio e platôs
@@ -334,7 +334,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 | Quando | Meta |
 |---|---|
-| **Terça 20/10** | Projeto criado e no GitHub ✅. Cada um começa sua parte. |
+| **Terça 20/10** | Projeto criado e no GitHub ✅. Movimento, Pulso, spawn e coleta prontos ✅. Parte do Rafael pronta e integrada ✅. |
 | **Quarta 21/10, tarde** | Primeira junção na `Nivel1`: robô animado + movimento + cenário. |
 | **Quarta 21/10, noite** | Ajustes, correções, UI ligada aos scripts. |
 | **Quinta 22/10, antes da aula** | Testar num PC do lab, preencher a seção 6 do GDD com os scripts reais, zipar e entregar. |
@@ -365,6 +365,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] `Cena_Teste_Thiago` montada (cápsula Player com câmera filha, chão, Caixa, Degrau, Plataforma e Caixote com `HeavyDebris`)
 - [x] `PlayerMovement.cs` pronto e testado
 - [x] `InteractionController.cs` (Pulso Cinético) pronto e testado
+- [x] `ScrapE` integrado ao `Player` na `Cena_Teste_Thiago`, com animações funcionando
+- [x] `SpawnManager.cs`, `Rotator.cs` e `PlayerInventory.cs` prontos e testados; prefabs `BioFiltro` (tag `EcoItem`, verde) e `SucataCoin` (tag `ScrapCoin`) em `Prefabs/Gameplay`; 8 pontos de spawn na cena de teste
 - [x] `ScrapE.prefab` pronto em `Prefabs/Personagem` (tag `Player`, `Apply Root Motion` desligado, malha 3D articulada amarela com visor LED azul)
 - [x] `ScrapE_Animator.controller` + 5 animações (`Idle`, `Walking`, `Running`, `Jump`, `FallingIdle`) e utilitário `MixamoSetupUtility.cs`
 - [x] `HUD_Canvas.prefab` pronto em `Prefabs/UI` (`BarraHP`, `TextoFiltros`, `TextoSucata`, `TextoTimer` e painéis `PainelPausa`, `PainelVitoria`, `PainelGameOver`)
@@ -379,7 +381,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
-- [ ] Thiago: `SpawnManager`, `Rotator` + `PlayerInventory`, `PurifierTower`, `PlayerHealth`, `GameManager` + `UIManager`
+- [ ] Thiago (21/10): `PurifierTower`, `PlayerHealth`, `GameManager` + `UIManager`; depois junção na `Nivel1` e seção 6 do GDD
+- [ ] Arthur: **nenhum commit até 21/10 14h**. Confirmar o andamento da `Nivel1` (é o único bloqueio da junção)
 - [ ] Arthur: tudo da seção 5 (cenário)
 - [ ] Rafael: item 7 da seção 5 (na quinta-feira: zip final e conferência do checklist da seção 2 após integração final)
 
@@ -441,6 +444,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Thiago | Status atualizado: `SpawnManager` (pontos compartilhados entre filtros e sucatas), `Rotator`, `PlayerInventory` e integração do `ScrapE` prontos; Arthur sem commits até agora
 - 2026-10-20 | Thiago | Parte do Rafael testada na Unity; `ScrapE.prefab` corrigido (ID reservado 100100000 e tag Player); alerta sobre arquivos gerados fora do editor na seção 10
 - 2026-10-20 | Thiago | Branch do Rafael revisada e mesclada na `main`; Eco-Timer fixado em 3 minutos (D18); GDD revisado movido para a raiz do repositório; notas de integração com o `MainMenuController` e o `HUD_Canvas`
 - 2026-10-20 | Rafael | `MenuPrincipal.unity`, `Cena_Teste_Rafael.unity`, `MainMenuController.cs` e `EditorBuildSettings.asset` (`MenuPrincipal` índice 0, `Nivel1` índice 1) prontos e testados; criado `GUIA_RAFAEL.md`
