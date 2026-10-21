@@ -381,14 +381,15 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] `ScrapE.prefab` corrigido: ID reservado `100100000` trocado e tag `Player` removida (fica só na cápsula)
 - [x] `EditorBuildSettings.asset` configurado com `MenuPrincipal` (índice 0) e `Nivel1` (índice 1)
 
+- [x] Cenário da `Nivel1` pronto e testado pelo Arthur (2026-10-21), do menu até a vitória: terreno de 240 m com os 4 setores e 6 camadas de textura, 101 assets diferentes (Apêndice B do `GUIA_ARTHUR.md`), entulhos com física e tag `HeavyDebris`, 6 poças `Lodo`, 12 `SpawnPoint_XX`, névoa do Lighting, partículas `Fumaca`, `Particula_Pedrinhas` e `Particula_Purificacao`, sons ligados, `Torre` com console, `EffectPoint` e `AreaCanal` com 3 entulhos
+- [x] Junção do `SIstemaDeJogo` na `Nivel1` feita (campos de partícula, som e spawn preenchidos na cena)
+- [x] Pacotes grátis da Asset Store importados: Low Poly Rock Pack e Low Poly Cliff Pack (Broken Vector), Stylized Low Poly Rocks e Low-Poly Simple Nature Pack (JustCreate), Dry Trees, Low-poly Industrial Pack (Donthrukat), PBR Barrels and Crates, Garage Props Set; materiais convertidos para URP pelo script
+
 ### Pendente
 - [ ] Convidar Arthur e Rafael como colaboradores no GitHub
 - [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
-- [ ] Junção na `Nivel1` (depende do cenário do Arthur; plano B: Thiago monta uma `Nivel1` simples)
-- [ ] Arthur: **nenhum commit até 21/10 14h**. Confirmar o andamento da `Nivel1` (é o único bloqueio da junção)
-- [ ] Arthur: tudo da seção 5 (cenário)
 - [ ] Rafael: item 7 da seção 5 (na quinta-feira: zip final e conferência do checklist da seção 2 após integração final)
 
 ---
@@ -454,6 +455,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Arthur | Cenário da `Nivel1` montado pelo script de editor `Art/Cenario/Editor/MontarNivel1.cs` (menu EcoScrapper → Montar Nivel1); 101 assets diferentes, 8 pacotes grátis da Asset Store, sons e partículas; Apêndice B do `GUIA_ARTHUR.md` preenchido. Atenção: rodar o menu de novo recria os prefabs de `Prefabs/Cenario` e a cena
 - 2026-10-21 | Thiago | Criado `GUIA_ARTHUR.md` (guia de tarefa do cenário da `Nivel1`); corrigida a orientação das partículas criadas pelo código (Play On Awake ligado)
 - 2026-10-21 | Thiago | Prefab `SIstemaDeJogo` (mais `Torre` e `Lodo`), `CheatCode.cs` (E-C-O) e seção 6 do GDD com os 11 scripts; emotes G/H descartados
 - 2026-10-21 | Thiago | `PurifierTower`, `PlayerHealth`, `GameManager` e `UIManager` prontos e testados; todo o código do Thiago concluído; notas de montagem de cena na seção 10

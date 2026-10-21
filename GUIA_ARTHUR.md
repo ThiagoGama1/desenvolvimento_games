@@ -296,10 +296,112 @@ Também já existe no projeto: o Bio-Filtro (prefab `BioFiltro`).
 
 ---
 
-## Apêndice B: assets usados na `Nivel1` (preencher)
+## Apêndice B: assets usados na `Nivel1`
+
+**101 assets diferentes** (meta: 70). Setores: S1 Despertar, S2 Ravina, S3 Leito Seco, S4 Represa. Os modelos gerados são reconstruídos pelo menu **EcoScrapper → Montar Nivel1 (Arthur)**; a contagem na cena sai em **EcoScrapper → Listar assets da Nivel1**.
+
 
 | # | Nome do asset (como está no projeto) | Pacote de origem | Categoria (1 a 5) | Setor(es) |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
-| ... | | | | |
+| 1 | `Rocha_Falesia_A` | Low Poly Cliff Pack (Broken Vector) — `Clifftile Straight 1` | 1 | S1, S3 |
+| 2 | `Rocha_Falesia_B` | Low Poly Cliff Pack (Broken Vector) — `Clifftile Convex` | 1 | S1, S3 |
+| 3 | `Pedregulho_Pontiagudo` | Low Poly Rock Pack (Broken Vector) — `Rock Type1 01` | 1 | S2, S3 |
+| 4 | `Pedregulho_Arredondado` | Low Poly Rock Pack (Broken Vector) — `Rock Type2 01` | 1 | S3 |
+| 5 | `Laje_Pedra_Chata` | Low Poly Rock Pack (Broken Vector) — `Rock Type3 02` | 1 | S3 |
+| 6 | `Seixos_Conjunto` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 1 | S1, S2, S3 |
+| 7 | `Arco_Rochoso` | Low Poly Cliff Pack (Broken Vector) — `Clifftile Pass 1` | 1 | S1 |
+| 8 | `Paredao_Canion` | Low Poly Cliff Pack (Broken Vector) — `Clifftile Straight 2` | 1 | S2, S3 |
+| 9 | `Coluna_Basaltica` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 1 | S2 |
+| 10 | `Bloco_Rochoso_Quebravel` | Low Poly Rock Pack (Broken Vector) — `Rock Type4 01` | 1 | S2 |
+| 11 | `Rampa_Terra_Batida` | Low-Poly Simple Nature Pack (JustCreate) — `Ground_01` | 1 | S2 |
+| 12 | `Talude_Cascalho` | Low Poly Cliff Pack (Broken Vector) — `Rocktile Straight 1` | 1 | S2 |
+| 13 | `Calha_Fluvial_Seca` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 1 | S3 |
+| 14 | `Margem_Seixos_Rio` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 1 | S3 |
+| 15 | `Cratera_Erosao` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 1 | S3 |
+| 16 | `Rocha_Lascada` | Low Poly Rock Pack (Broken Vector) — `Rock Type5 01` | 1 | S2 |
+| 17 | `Pedra_Pequena` | Low-Poly Simple Nature Pack (JustCreate) — `Rock_01` | 1 | S1, S2, S3, S4 |
+| 18 | `Pedra_Alongada` | Low Poly Rock Pack (Broken Vector) — `Rock Type6 01` | 1 | S3 |
+| 19 | `Rocha_Musgo` | Stylized Low Poly Rocks (JustCreate) — `SM_Rocks_01` | 1 | S2, S3, S4 |
+| 20 | `Pilha_Pedras` | Stylized Low Poly Rocks (JustCreate) — `SM_Rocks_03` | 1 | S1, S4 |
+| 21 | `Arvore_Petrificada` | Dry Trees (DigitalAntichrist) — `Dry3333` | 2 | S1 |
+| 22 | `Arvore_Caida` | Low-Poly Simple Nature Pack (JustCreate) — `Branch_01` | 2 | S3 |
+| 23 | `Toco_Oco` | Low-Poly Simple Nature Pack (JustCreate) — `Stump_01` | 2 | S1 |
+| 24 | `Raiz_Gigante` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S3 |
+| 25 | `Arbusto_Seco_Espinhoso` | Low-Poly Simple Nature Pack (JustCreate) — `Bush_02` | 2 | S1, S3 |
+| 26 | `Espinheiro_Rasteiro` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S1, S2 |
+| 27 | `Arbusto_Queimado` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S2 |
+| 28 | `Muda_Bioluminescente` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S1, S3 |
+| 29 | `Flor_Esporos_Azuis` | Low-Poly Simple Nature Pack (JustCreate) — `Flowers_01` | 2 | S3, S4 |
+| 30 | `Moita_Grama_Alta` | Low-Poly Simple Nature Pack (JustCreate) — `Grass_01` | 2 | S3, S4 |
+| 31 | `Trepadeiras_Encosta` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S2, S4 |
+| 32 | `Cogumelo_Filtrador` | Low-Poly Simple Nature Pack (JustCreate) — `Mushroom_01` | 2 | S3, S4 |
+| 33 | `Liquen_Fluorescente` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S1, S3 |
+| 34 | `Juncos_Aquaticos` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S3 |
+| 35 | `Arbusto_Frutifero` | Low-Poly Simple Nature Pack (JustCreate) — `Bush_01` | 2 | S4 |
+| 36 | `Cacto_Seco` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 2 | S1 |
+| 37 | `Tambor_Oleo_Amassado` | Low-poly Industrial Pack (Donthrukat) — `barrel_blue` | 3 | S2, S3 |
+| 38 | `Barril_Contrapeso` | PBR Barrels and Crates (Integrity Software & Games) — `Barrel Hazmat` | 3 | S3 |
+| 39 | `Cacamba_Enferrujada` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S3 |
+| 40 | `Duto_Curvo_Quebrado` | Low-poly Industrial Pack (Donthrukat) — `pipe_metal_corner` | 3 | S3 |
+| 41 | `Duto_Reto_Quebrado` | Low-poly Industrial Pack (Donthrukat) — `bighightpipe` | 3 | S3 |
+| 42 | `Caixa_Madeira` | Low-poly Industrial Pack (Donthrukat) — `woodenbox` | 3 | S1 |
+| 43 | `Caixote_Aco_Reforcado` | PBR Barrels and Crates (Integrity Software & Games) — `Crate Metal` | 3 | S3 |
+| 44 | `Viga_I_Torcida` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S2 |
+| 45 | `Engrenagem_Desgastada` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S3 |
+| 46 | `Roda_Dentada_Pequena` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S2 |
+| 47 | `Rolo_Cabos_Cobre` | Low-poly Industrial Pack (Donthrukat) — `coil_dark` | 3 | S3 |
+| 48 | `Pneu_Industrial` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S3 |
+| 49 | `Placa_Corrugada` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S2 |
+| 50 | `Chapa_Gangorra` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 3 | S3 |
+| 51 | `Gerador_Desativado` | Low-poly Industrial Pack (Donthrukat) — `conditioner` | 3 | S3 |
+| 52 | `Tanque_Pressao_Esferico` | Low-poly Industrial Pack (Donthrukat) — `spherecan_orange` | 3 | S3 |
+| 53 | `Escada_Incendio_Torcida` | Garage Props Set (Abandoned World) — `stairs` | 3 | S2 |
+| 54 | `Conteiner_Leve` | Low-poly Industrial Pack (Donthrukat) — `bigcrate_red` | 3 | S2 |
+| 55 | `Pedra_Entulho_Fisica` | Low Poly Rock Pack (Broken Vector) — `Rock Type4 03` | 3 | S2, S4 |
+| 56 | `Torre_Purificadora_Modelo` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 57 | `Console_Terminal` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 58 | `Comporta_Represa` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 59 | `Valvula_Manual` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 60 | `Passarela_Grade` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 61 | `Pilar_Concreto` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 62 | `Corrimao_Metalico` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 63 | `Tubo_Drenagem` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S3 |
+| 64 | `Caixa_Eletrica_Quebrada` | Low-poly Industrial Pack (Donthrukat) — `electrolocker` | 4 | S2 |
+| 65 | `Poste_Sinalizacao_Inclinado` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S2, S4 |
+| 66 | `Placa_Aviso_Toxico` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S1, S3 |
+| 67 | `Cerca_Arame` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 4 | S4 |
+| 68 | `Drone_ARIA` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S1 |
+| 69 | `Lagarto_Rochas` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S1, S4 |
+| 70 | `Passaro_Canyon_Swift` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S2 |
+| 71 | `Lebre_Prado` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S3 |
+| 72 | `Besouro_Blindado` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S2, S4 |
+| 73 | `Peixe_Cintilante` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S3 |
+| 74 | `EasterEgg_Esteira_Bota` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S3 |
+| 75 | `EasterEgg_Extintor_Vintage` | Gerado pelo script `MontarNivel1` (primitivas/malha procedural) | 5 | S3 |
+| 76 | `Arvore_Seca_B` | Dry Trees (DigitalAntichrist) — `Dry4195` | 2 | S2 |
+| 77 | `Arvore_Seca_C` | Dry Trees (DigitalAntichrist) — `Dry7509` | 2 | S3 |
+| 78 | `Arvore_Seca_D` | Dry Trees (DigitalAntichrist) — `Dry8872` | 2 | S3 |
+| 79 | `Arvore_Viva_Restaurada` | Low-Poly Simple Nature Pack (JustCreate) — `Tree_01` | 2 | S4 |
+| 80 | `Arbusto_Verde_Baixo` | Low-Poly Simple Nature Pack (JustCreate) — `Bush_03` | 2 | S2 |
+| 81 | `Grama_Rasteira` | Low-Poly Simple Nature Pack (JustCreate) — `Grass_02` | 2 | S3 |
+| 82 | `Rocha_Estilizada_B` | Stylized Low Poly Rocks (JustCreate) — `SM_Rocks_02` | 1 | S3 |
+| 83 | `Rocha_Estilizada_D` | Stylized Low Poly Rocks (JustCreate) — `SM_Rocks_04` | 1 | S4 |
+| 84 | `Rocha_Tipo1_Grande` | Low Poly Rock Pack (Broken Vector) — `Rock Type1 03` | 1 | S2 |
+| 85 | `Rocha_Tipo3_Media` | Low Poly Rock Pack (Broken Vector) — `Rock Type3 01` | 1 | S3 |
+| 86 | `Rocha_Tipo5_Lasca` | Low Poly Rock Pack (Broken Vector) — `Rock Type5 03` | 1 | S3 |
+| 87 | `Rocha_Tipo6_Baixa` | Low Poly Rock Pack (Broken Vector) — `Rock Type6 02` | 1 | S4 |
+| 88 | `Rochedo_Pass` | Low Poly Cliff Pack (Broken Vector) — `Rocktile Pass` | 1 | S2 |
+| 89 | `Tanque_Cilindrico` | Low-poly Industrial Pack (Donthrukat) — `cylindertank_green` | 3 | S3 |
+| 90 | `Tanque_Grande_Amarelo` | Low-poly Industrial Pack (Donthrukat) — `bigtank_yellow` | 3 | S3 |
+| 91 | `Tanque_Longo` | Low-poly Industrial Pack (Donthrukat) — `longtank_orange` | 3 | S4 |
+| 92 | `Lixeira_Industrial` | Low-poly Industrial Pack (Donthrukat) — `trashcan_green` | 3 | S2 |
+| 93 | `Palete_Madeira` | Low-poly Industrial Pack (Donthrukat) — `pallet` | 3 | S3 |
+| 94 | `Prateleira_Tombada` | Low-poly Industrial Pack (Donthrukat) — `shelf2` | 3 | S3 |
+| 95 | `Caixa_Ferramentas` | Low-poly Industrial Pack (Donthrukat) — `toolcrate` | 3 | S4 |
+| 96 | `Armario_Metal` | Low-poly Industrial Pack (Donthrukat) — `metal cabinet` | 3 | S2 |
+| 97 | `Ventilacao_Quebrada` | Low-poly Industrial Pack (Donthrukat) — `vent` | 3 | S3 |
+| 98 | `Barril_Velho_Garagem` | Garage Props Set (Abandoned World) — `barrel` | 3 | S3 |
+| 99 | `Tanque_Garagem` | Garage Props Set (Abandoned World) — `tank` | 3 | S4 |
+| 100 | `Caixote_Quebrado` | PBR Barrels and Crates (Integrity Software & Games) — `Crate Dry_BrokenLarge` | 3 | S2 |
+| 101 | `Barril_Umido` | PBR Barrels and Crates (Integrity Software & Games) — `Barrel Wet` | 3 | S3 |
+| — | `ScrapE`, `BioFiltro`, `SucataCoin`, `Torre`, `Lodo` | Prefabs do grupo (Rafael/Thiago) | 3, 5 | todos |
