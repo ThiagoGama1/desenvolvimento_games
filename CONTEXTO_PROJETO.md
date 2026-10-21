@@ -215,6 +215,8 @@ O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para f
 **Como ligar o `ScrapE` (feito na `Cena_Teste_Thiago`, repetir na `Nivel1`):** arrastar o `ScrapE` para dentro do `Player` (como filho) na posição `0, -1, 0`, desativar o Mesh Renderer da cápsula e arrastar o `ScrapE` **da Hierarchy** (não da aba Project!) para o campo `animator` do `PlayerMovement`. Se arrastar da aba Project, o script manda os parâmetros para o arquivo do prefab e o robô fica parado no Idle.
 
 ### Arthur: cenário (cena `Nivel1`, `Art/Cenario`, `Prefabs/Cenario`)
+> **Guia de tarefa completo: [[GUIA_ARTHUR]] (`GUIA_ARTHUR.md`, na raiz do repositório).** Tem o que entregar com critério de pronto, como fazer cada item, onde ligar cada partícula e som (nomes dos campos), a integração do `SIstemaDeJogo` passo a passo, o checklist final e a lista dos 72 assets do GDD. A lista abaixo é só o resumo.
+
 1. Terreno (Terrain): os 4 setores, ravina, leito do rio e platôs
 2. Camadas de textura no terreno: solo árido, cascalho, rocha, lodo
 3. Importar e posicionar **70+ assets** seguindo as categorias da seção 4.1 do GDD
@@ -419,7 +421,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - Animações importadas sem **Copy From Other Avatar** ficam tortas ou não tocam.
 
 ### Cenário (Arthur)
-- Partículas de impacto e de purificação precisam ser **prefabs**, com **Looping** e **Play On Awake** desligados, porque o código cria e dispara elas na hora certa.
+- Partículas de impacto e de purificação precisam ser **prefabs** com **Looping desligado e Play On Awake LIGADO**. O código só cria o objeto (`Instantiate`) e não chama `Play()`, então a partícula precisa começar sozinha. (Corrigido em 2026-10-21: a orientação anterior, que dizia Play On Awake desligado, estava errada; o Guia do Grupo em PDF ainda tem a versão antiga.)
 - Poça de lodo sem **Is Trigger** vira chão sólido, e o dano não funciona.
 
 ### Usando o Claude no projeto
@@ -452,6 +454,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Thiago | Criado `GUIA_ARTHUR.md` (guia de tarefa do cenário da `Nivel1`); corrigida a orientação das partículas criadas pelo código (Play On Awake ligado)
 - 2026-10-21 | Thiago | Prefab `SIstemaDeJogo` (mais `Torre` e `Lodo`), `CheatCode.cs` (E-C-O) e seção 6 do GDD com os 11 scripts; emotes G/H descartados
 - 2026-10-21 | Thiago | `PurifierTower`, `PlayerHealth`, `GameManager` e `UIManager` prontos e testados; todo o código do Thiago concluído; notas de montagem de cena na seção 10
 - 2026-10-21 | Thiago | Status atualizado: `SpawnManager` (pontos compartilhados entre filtros e sucatas), `Rotator`, `PlayerInventory` e integração do `ScrapE` prontos; Arthur sem commits até agora

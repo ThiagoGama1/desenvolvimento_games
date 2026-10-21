@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 4370810739453576272}
   - component: {fileID: 360110748686317489}
   - component: {fileID: 1910564141878824370}
+  - component: {fileID: 2400540121279649442}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -351,6 +352,22 @@ MonoBehaviour:
   debrisDamage: 25
   debrisMinSpeed: 5
   deathEffectPrefab: {fileID: 0}
+--- !u!114 &2400540121279649442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2858009999074057257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22b625da0b38a2e47871bad4fddf79e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTimeBetweenKeys: 1.5
+  boostMultiplier: 2
+  boostDuration: 5
+  cheatSound: {fileID: 0}
 --- !u!1 &3377546854989751212
 GameObject:
   m_ObjectHideFlags: 0
