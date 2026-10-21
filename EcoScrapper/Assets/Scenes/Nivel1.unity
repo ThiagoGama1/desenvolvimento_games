@@ -2198,6 +2198,14 @@ PrefabInstance:
       propertyPath: impactParticlePrefab
       value: 
       objectReference: {fileID: 5560675263144579027, guid: 565e031a7f7f43645b190475228a097a, type: 3}
+    - target: {fileID: 5858739637781490360, guid: 5efa23fa29c94e44898313b0d5317d3f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5858739637781490360, guid: 5efa23fa29c94e44898313b0d5317d3f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2233,7 +2241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3863141227517721511, guid: 7f5f36f295098e742874d29991ce29d3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3863141227517721511, guid: 7f5f36f295098e742874d29991ce29d3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9804,7 +9812,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7560536059056721297, guid: 24e6d11b10959fd47abfca15415fb218, type: 3}
       propertyPath: m_Mass
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12417,7 +12425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7560536059056721297, guid: 24e6d11b10959fd47abfca15415fb218, type: 3}
       propertyPath: m_Mass
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17075,7 +17083,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7560536059056721297, guid: 24e6d11b10959fd47abfca15415fb218, type: 3}
       propertyPath: m_Mass
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

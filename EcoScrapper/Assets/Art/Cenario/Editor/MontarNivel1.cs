@@ -38,6 +38,18 @@ public static class MontarNivel1
     static Terrain terrain;
     static System.Random rng;
 
+    /// <summary>
+    /// Monta todo o cenário da Nivel1 a partir do menu EcoScrapper → Montar Nivel1 (Arthur).
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Pergunta se o usuário quer salvar a cena aberta; se cancelar, não faz nada.
+    /// 2. Fixa a semente do sorteio (2026), para o cenário sair sempre igual.
+    /// 3. Em ordem: cria as pastas, os materiais, os sons, as partículas, converte os materiais
+    ///    dos pacotes da loja para URP e gera os prefabs de cenário.
+    /// 4. Abre a Nivel1, apaga o que foi gerado antes, cria o terreno e monta os setores.
+    /// 5. Salva a cena e os assets. A barra de progresso é fechada mesmo se der erro (finally).
+    /// </remarks>
     [MenuItem("EcoScrapper/Montar Nivel1 (Arthur)")]
     public static void Montar()
     {
@@ -88,6 +100,14 @@ public static class MontarNivel1
 
     // ------------------------------------------------------------------ pastas
 
+    /// <summary>
+    /// Cria as pastas de arte e de prefabs do cenário, se ainda não existirem.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Percorre as pastas de materiais, texturas, malhas, sons e prefabs e cria cada uma no disco.
+    /// Depois atualiza o AssetDatabase para a Unity enxergar as pastas novas.
+    /// </remarks>
     static void CriarPastas()
     {
         foreach (var dir in new[] { ArtRoot, MatDir, TexDir, MeshDir, SoundDir, PrefabRoot, AssetPrefabDir })
@@ -99,6 +119,14 @@ public static class MontarNivel1
 
     // --------------------------------------------------------------- materiais
 
+    /// <summary>
+    /// Cria (ou atualiza) todos os materiais URP usados nos modelos gerados pelo script.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Chama Mat() para cada material: rochas, madeiras, plantas, metais, concreto, energia e fauna.
+    /// Os materiais com emissão (bioluminescente, esporos, energia, tela, lodo) brilham sozinhos.
+    /// </remarks>
     static void CriarMateriais()
     {
         Mat("Rocha", new Color(0.45f, 0.40f, 0.35f));
@@ -141,6 +169,20 @@ public static class MontarNivel1
         Mat("Bota", new Color(0.30f, 0.20f, 0.12f));
     }
 
+    /// <summary>
+    /// Cria ou atualiza um material URP/Lit com cor, metalicidade e emissão opcional.
+    /// </summary>
+    /// <param name="name">Nome do material; o arquivo é salvo como Cen_&lt;nome&gt;.mat.</param>
+    /// <param name="color">Cor base do material.</param>
+    /// <param name="emission">Cor de emissão (brilho próprio); null se o material não brilha.</param>
+    /// <param name="metal">Metalicidade de 0 a 1.</param>
+    /// <returns>Material: o material criado ou atualizado.</returns>
+    /// <remarks>
+    /// 1. Carrega o material se ele já existe; senão, cria um novo com o shader URP/Lit.
+    /// 2. Aplica cor, metalicidade e suavidade (mais lisa em metais).
+    /// 3. Se houver emissão, liga a palavra-chave _EMISSION e define a cor do brilho.
+    /// 4. Guarda no dicionário mats para os modelos usarem pelo nome.
+    /// </remarks>
     static Material Mat(string name, Color color, Color? emission = null, float metal = 0f)
     {
         string path = MatDir + "/Cen_" + name + ".mat";
@@ -166,6 +208,19 @@ public static class MontarNivel1
 
     // -------------------------------------------------------------------- sons
 
+    /// <summary>
+    /// Gera por código os sons do jogo e salva como arquivos .wav.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Cada som é calculado amostra por amostra (44.100 por segundo):
+    /// - vento: ruído filtrado com rajadas e um zumbido grave, com fade cruzado para tocar em loop;
+    /// - impacto metálico: frequências inarmônicas que decaem, mais um estalo de ruído;
+    /// - bip de coleta: duas notas subindo;
+    /// - ativação da torre: um tom que sobe somado a um ruído que imita água correndo;
+    /// - confirmação do cheat: um arpejo rápido de quatro notas.
+    /// No fim, atualiza o AssetDatabase para importar os arquivos.
+    /// </remarks>
     static void CriarSons()
     {
         const int sr = 44100;
@@ -253,6 +308,18 @@ public static class MontarNivel1
         AssetDatabase.Refresh();
     }
 
+    /// <summary>
+    /// Normaliza um vetor de amostras de áudio e grava como arquivo WAV de 16 bits mono.
+    /// </summary>
+    /// <param name="name">Nome do arquivo, sem extensão.</param>
+    /// <param name="samples">Amostras do som, em valores reais.</param>
+    /// <param name="sampleRate">Taxa de amostragem em Hz (ex.: 44100).</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Acha o pico do sinal e calcula um ganho para o volume máximo ficar em 90%.
+    /// 2. Escreve o cabeçalho WAV (RIFF, fmt e data) e as amostras convertidas para 16 bits.
+    /// 3. Salva o arquivo na pasta de sons.
+    /// </remarks>
     static void SalvarWav(string name, float[] samples, int sampleRate)
     {
         float peak = 0.0001f;
@@ -280,6 +347,14 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Carrega um AudioClip gerado pelo script.
+    /// </summary>
+    /// <param name="name">Nome do som, sem extensão.</param>
+    /// <returns>AudioClip: o som carregado, ou null se não existir.</returns>
+    /// <remarks>
+    /// Busca o arquivo .wav na pasta de sons pelo AssetDatabase.
+    /// </remarks>
     static AudioClip Som(string name)
     {
         return AssetDatabase.LoadAssetAtPath<AudioClip>(SoundDir + "/" + name + ".wav");
@@ -287,6 +362,19 @@ public static class MontarNivel1
 
     // --------------------------------------------------------------- partículas
 
+    /// <summary>
+    /// Cria os três prefabs de partículas do cenário: Fumaca, Particula_Pedrinhas e Particula_Purificacao.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Gera a textura redonda e os materiais de partícula (URP/Particles/Unlit).
+    /// 2. Fumaca: em loop, Play On Awake ligado, sobe devagar, cresce e some no fim.
+    /// 3. Particula_Pedrinhas: sem loop e com Play On Awake ligado (o código só a instancia),
+    ///    um burst de 20 pedrinhas com gravidade.
+    /// 4. Particula_Purificacao: sem loop e com Play On Awake ligado, burst de 200 partículas verdes
+    ///    em esfera, mais um sistema filho de pétalas.
+    /// 5. Salva cada um como prefab em Prefabs/Cenario.
+    /// </remarks>
     static void CriarParticulas()
     {
         var circulo = TexturaCirculo();
@@ -396,6 +484,16 @@ public static class MontarNivel1
         SalvarPrefab(go, PrefabRoot + "/Particula_Purificacao.prefab");
     }
 
+    /// <summary>
+    /// Monta um gradiente de cor que aparece suavemente e some no fim.
+    /// </summary>
+    /// <param name="a">Cor no início da vida da partícula.</param>
+    /// <param name="b">Cor no fim da vida da partícula.</param>
+    /// <param name="alpha0">Opacidade máxima no meio da vida.</param>
+    /// <returns>Gradient: o gradiente pronto para o Color over Lifetime.</returns>
+    /// <remarks>
+    /// A opacidade começa em 0, sobe até alpha0, se mantém e volta a 0 no fim.
+    /// </remarks>
     static Gradient Gradiente(Color a, Color b, float alpha0)
     {
         var g = new Gradient();
@@ -405,6 +503,14 @@ public static class MontarNivel1
         return g;
     }
 
+    /// <summary>
+    /// Gera a textura redonda e esfumaçada usada pelas partículas.
+    /// </summary>
+    /// <returns>Texture2D: a textura importada.</returns>
+    /// <remarks>
+    /// 1. Pinta uma imagem 64x64 em que a transparência diminui do centro para a borda.
+    /// 2. Salva como PNG, importa e marca a transparência no importador de textura.
+    /// </remarks>
     static Texture2D TexturaCirculo()
     {
         string path = TexDir + "/Particula_Circulo.png";
@@ -425,6 +531,16 @@ public static class MontarNivel1
         return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
     }
 
+    /// <summary>
+    /// Cria ou atualiza um material transparente de partícula (URP/Particles/Unlit).
+    /// </summary>
+    /// <param name="name">Nome do arquivo do material.</param>
+    /// <param name="tex">Textura da partícula.</param>
+    /// <param name="color">Cor base, com transparência.</param>
+    /// <returns>Material: o material de partícula.</returns>
+    /// <remarks>
+    /// Define a textura e a cor e configura a mistura alfa (transparente, sem escrita de profundidade).
+    /// </remarks>
     static Material MatParticula(string name, Texture2D tex, Color color)
     {
         string path = MatDir + "/" + name + ".mat";
@@ -448,6 +564,15 @@ public static class MontarNivel1
         return mat;
     }
 
+    /// <summary>
+    /// Salva um objeto da cena como prefab e apaga o objeto temporário.
+    /// </summary>
+    /// <param name="go">Objeto montado em memória.</param>
+    /// <param name="path">Caminho do arquivo .prefab.</param>
+    /// <returns>GameObject: o prefab salvo.</returns>
+    /// <remarks>
+    /// Usa PrefabUtility.SaveAsPrefabAsset e depois DestroyImmediate no objeto original.
+    /// </remarks>
     static GameObject SalvarPrefab(GameObject go, string path)
     {
         var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
@@ -468,11 +593,32 @@ public static class MontarNivel1
 
     static List<Def> defs = new List<Def>();
 
+    /// <summary>
+    /// Registra a definição de um prefab de cenário na lista defs.
+    /// </summary>
+    /// <param name="nome">Nome do prefab.</param>
+    /// <param name="cat">Categoria do GDD (1 a 5).</param>
+    /// <param name="montar">Função que monta o modelo com primitivas quando não há modelo da loja.</param>
+    /// <param name="massa">Massa do Rigidbody; maior que zero transforma o objeto em entulho com física.</param>
+    /// <param name="atravessavel">true para tirar os colliders (plantas, grama, pedrinhas).</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Só adiciona um objeto Def à lista. Os prefabs são criados depois, em CriarPrefabsDeCenario.
+    /// </remarks>
     static void D(string nome, int cat, Action<Transform> montar, float massa = 0f, bool atravessavel = false)
     {
         defs.Add(new Def { nome = nome, categoria = cat, montar = montar, massa = massa, atravessavel = atravessavel });
     }
 
+    /// <summary>
+    /// Define e cria todos os prefabs de cenário, separados pelas 5 categorias do GDD.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Limpa a lista e registra cada asset com D(): rochas, flora, sucata, infraestrutura e fauna.
+    /// 2. Acrescenta os modelos que existem só nos pacotes da loja (AdicionarModelosDaLoja).
+    /// 3. Cria o prefab de cada definição com CriarPrefab, atualizando a barra de progresso.
+    /// </remarks>
     static void CriarPrefabsDeCenario()
     {
         defs.Clear();
@@ -835,6 +981,18 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Monta e salva o prefab de um asset de cenário a partir da sua definição.
+    /// </summary>
+    /// <param name="def">Definição do asset (nome, categoria, massa, montagem, se é atravessável).</param>
+    /// <returns>GameObject: o prefab salvo em Prefabs/Cenario/Assets.</returns>
+    /// <remarks>
+    /// 1. Usa o modelo da loja, se houver um mapeado e importado; senão, monta com primitivas.
+    /// 2. Se for atravessável, remove todos os colliders.
+    /// 3. Se tiver massa, adiciona Rigidbody (com interpolação e colisão contínua) e põe a tag
+    ///    HeavyDebris em todos os filhos, porque o Pulso Cinético confere a tag no collider.
+    /// 4. Objetos sem física são marcados como estáticos, para a Unity otimizar o desenho.
+    /// </remarks>
     static GameObject CriarPrefab(Def def)
     {
         var root = new GameObject(def.nome);
@@ -961,6 +1119,14 @@ public static class MontarNivel1
         "Ventilacao_Quebrada", "Barril_Velho_Garagem", "Tanque_Garagem", "Caixote_Quebrado", "Barril_Umido"
     };
 
+    /// <summary>
+    /// Registra os assets que existem só nos pacotes da Asset Store.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Para cada nome da lista SoLoja cujo prefab foi encontrado, deduz a categoria pelo nome
+    /// (árvore/arbusto/grama = 2, rocha = 1, o resto = 3) e registra com D().
+    /// </remarks>
     static void AdicionarModelosDaLoja()
     {
         foreach (var nome in SoLoja)
@@ -972,6 +1138,14 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Procura um prefab dentro das pastas dos pacotes importados da Asset Store.
+    /// </summary>
+    /// <param name="caminho">Trecho final do caminho do prefab, sem a extensão .prefab.</param>
+    /// <returns>GameObject: o prefab encontrado, ou null se o pacote não foi importado.</returns>
+    /// <remarks>
+    /// Busca pelo nome do arquivo nas pastas dos pacotes e confere se o caminho termina no trecho pedido.
+    /// </remarks>
     static GameObject AcharPrefabLoja(string caminho)
     {
         string nome = Path.GetFileName(caminho);
@@ -987,8 +1161,20 @@ public static class MontarNivel1
         return null;
     }
 
-    /// Põe o modelo do pacote como filho, escalado para o tamanho pedido, com a base em y = 0.
-    /// Tira scripts e Rigidbody que o pacote traga e garante collider.
+    /// <summary>
+    /// Coloca um modelo da Asset Store como filho, no tamanho pedido e apoiado no chão.
+    /// </summary>
+    /// <param name="parent">Objeto que vai receber o modelo.</param>
+    /// <param name="caminho">Trecho do caminho do prefab do pacote.</param>
+    /// <param name="tamanho">Maior dimensão desejada, em metros.</param>
+    /// <returns>bool: true se o modelo foi colocado; false se não foi encontrado ou não tem malha.</returns>
+    /// <remarks>
+    /// 1. Instancia o prefab do pacote e desfaz o vínculo com ele (unpack).
+    /// 2. Remove juntas, scripts, Rigidbody e LOD que o pacote traga.
+    /// 3. Mede o tamanho pelos renderers, escala para o tamanho pedido e põe a base em y = 0.
+    /// 4. Garante collider: cria Mesh Colliders convexos se o modelo não tiver nenhum.
+    /// 5. Prende o modelo como filho do objeto recebido.
+    /// </remarks>
     static bool ModeloLoja(Transform parent, string caminho, float tamanho)
     {
         var src = AcharPrefabLoja(caminho);
@@ -1037,8 +1223,17 @@ public static class MontarNivel1
         return true;
     }
 
-    /// Os pacotes vêm com o shader Standard (ou um shader que nem veio junto), que no URP fica rosa.
-    /// Troca para URP/Lit levando a textura, a cor, o normal map e o recorte de alpha.
+    /// <summary>
+    /// Converte os materiais dos pacotes da loja para o shader URP/Lit, para não ficarem rosa.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Ignora materiais que já são URP, Shader Graph ou de partícula.
+    /// 2. Lê das propriedades salvas a textura, a cor, o normal map e o recorte de alpha
+    ///    (funciona mesmo quando o shader original não veio no pacote).
+    /// 3. Troca o shader para URP/Lit e reaplica esses valores; folhas e recortes ganham alpha clip.
+    /// 4. Salva os materiais alterados.
+    /// </remarks>
     static void ConverterMateriaisDaLoja()
     {
         var pastas = Array.FindAll(PastasLoja, AssetDatabase.IsValidFolder);
@@ -1082,6 +1277,16 @@ public static class MontarNivel1
         AssetDatabase.SaveAssets();
     }
 
+    /// <summary>
+    /// Procura uma propriedade gravada no arquivo de um material.
+    /// </summary>
+    /// <param name="so">Material aberto como SerializedObject.</param>
+    /// <param name="lista">Lista onde procurar (m_TexEnvs, m_Colors ou m_Floats).</param>
+    /// <param name="nome">Nome da propriedade (ex.: _MainTex).</param>
+    /// <returns>SerializedProperty: o valor gravado, ou null se não existir.</returns>
+    /// <remarks>
+    /// Percorre a lista m_SavedProperties do material comparando o nome de cada item.
+    /// </remarks>
     static SerializedProperty Salva(SerializedObject so, string lista, string nome)
     {
         var arr = so.FindProperty("m_SavedProperties." + lista);
@@ -1094,18 +1299,47 @@ public static class MontarNivel1
         return null;
     }
 
+    /// <summary>
+    /// Lê uma textura gravada no material.
+    /// </summary>
+    /// <param name="so">Material aberto como SerializedObject.</param>
+    /// <param name="nome">Nome da propriedade de textura.</param>
+    /// <returns>Texture: a textura, ou null se não houver.</returns>
+    /// <remarks>
+    /// Usa Salva() na lista m_TexEnvs.
+    /// </remarks>
     static Texture TexturaSalva(SerializedObject so, string nome)
     {
         var p = Salva(so, "m_TexEnvs", nome);
         return p == null ? null : p.FindPropertyRelative("m_Texture").objectReferenceValue as Texture;
     }
 
+    /// <summary>
+    /// Lê uma cor gravada no material.
+    /// </summary>
+    /// <param name="so">Material aberto como SerializedObject.</param>
+    /// <param name="nome">Nome da propriedade de cor.</param>
+    /// <param name="padrao">Cor usada se a propriedade não existir.</param>
+    /// <returns>Color: a cor gravada ou a cor padrão.</returns>
+    /// <remarks>
+    /// Usa Salva() na lista m_Colors.
+    /// </remarks>
     static Color CorSalva(SerializedObject so, string nome, Color padrao)
     {
         var p = Salva(so, "m_Colors", nome);
         return p == null ? padrao : p.colorValue;
     }
 
+    /// <summary>
+    /// Lê um número gravado no material.
+    /// </summary>
+    /// <param name="so">Material aberto como SerializedObject.</param>
+    /// <param name="nome">Nome da propriedade numérica.</param>
+    /// <param name="padrao">Valor usado se a propriedade não existir.</param>
+    /// <returns>float: o valor gravado ou o padrão.</returns>
+    /// <remarks>
+    /// Usa Salva() na lista m_Floats.
+    /// </remarks>
     static float FloatSalvo(SerializedObject so, string nome, float padrao)
     {
         var p = Salva(so, "m_Floats", nome);
@@ -1114,6 +1348,20 @@ public static class MontarNivel1
 
     // ---------------------------------------------------- blocos de construção
 
+    /// <summary>
+    /// Cria uma primitiva da Unity (cubo, cilindro, esfera, cápsula) como peça de um modelo.
+    /// </summary>
+    /// <param name="parent">Objeto pai da peça.</param>
+    /// <param name="type">Tipo de primitiva.</param>
+    /// <param name="pos">Posição local.</param>
+    /// <param name="scale">Escala local.</param>
+    /// <param name="euler">Rotação local em graus.</param>
+    /// <param name="mat">Nome do material (ver CriarMateriais).</param>
+    /// <param name="collider">false para remover o collider que a primitiva traz.</param>
+    /// <returns>Transform: o transform da peça criada.</returns>
+    /// <remarks>
+    /// Cria a primitiva, prende ao pai, aplica posição, escala, rotação e material e, se pedido, tira o collider.
+    /// </remarks>
     static Transform P(Transform parent, PrimitiveType type, Vector3 pos, Vector3 scale, Vector3 euler, string mat, bool collider = true)
     {
         var go = GameObject.CreatePrimitive(type);
@@ -1127,7 +1375,19 @@ public static class MontarNivel1
         return go.transform;
     }
 
-    /// Rocha low-poly: icosfera deformada por ruído, com faces chapadas. A malha é salva como asset.
+    /// <summary>
+    /// Cria uma rocha low-poly com malha gerada por código e collider convexo.
+    /// </summary>
+    /// <param name="parent">Objeto pai.</param>
+    /// <param name="meshName">Nome da malha (salva como asset Rocha_&lt;nome&gt;).</param>
+    /// <param name="seed">Semente do sorteio; a mesma semente gera a mesma rocha.</param>
+    /// <param name="size">Tamanho da rocha em metros.</param>
+    /// <param name="mat">Nome do material.</param>
+    /// <param name="rugosidade">Quanto a superfície é deformada.</param>
+    /// <returns>Transform: o transform da rocha.</returns>
+    /// <remarks>
+    /// Gera a malha com MeshRocha, salva como asset e monta o objeto com MeshFilter, MeshRenderer e MeshCollider convexo.
+    /// </remarks>
     static Transform Rocha(Transform parent, string meshName, int seed, Vector3 size, string mat, float rugosidade)
     {
         var mesh = SalvarMesh(MeshRocha(seed, rugosidade), "Rocha_" + meshName);
@@ -1142,6 +1402,18 @@ public static class MontarNivel1
         return go.transform;
     }
 
+    /// <summary>
+    /// Gera a malha de uma rocha: um icosaedro subdividido e deformado por ruído, com faces chapadas.
+    /// </summary>
+    /// <param name="seed">Semente do sorteio.</param>
+    /// <param name="rug">Rugosidade (intensidade da deformação).</param>
+    /// <returns>Mesh: a malha da rocha, com a base achatada e o pivô no chão.</returns>
+    /// <remarks>
+    /// 1. Parte dos 12 vértices de um icosaedro e subdivide cada triângulo em quatro.
+    /// 2. Desloca cada vértice com ruído Perlin e um pouco de aleatoriedade.
+    /// 3. Achata a base e sobe a malha para o pivô ficar no chão.
+    /// 4. Duplica os vértices por triângulo para as faces ficarem chapadas (visual low-poly).
+    /// </remarks>
     static Mesh MeshRocha(int seed, float rug)
     {
         var r = new System.Random(seed);
@@ -1203,6 +1475,15 @@ public static class MontarNivel1
         return mesh;
     }
 
+    /// <summary>
+    /// Salva uma malha como asset, reaproveitando o arquivo se ele já existir.
+    /// </summary>
+    /// <param name="mesh">Malha gerada.</param>
+    /// <param name="name">Nome do arquivo.</param>
+    /// <returns>Mesh: a malha salva (a existente atualizada, ou a nova).</returns>
+    /// <remarks>
+    /// Se o arquivo existe, copia os dados para ele (mantendo as referências dos prefabs); senão, cria o asset.
+    /// </remarks>
     static Mesh SalvarMesh(Mesh mesh, string name)
     {
         string path = MeshDir + "/" + name + ".asset";
@@ -1220,6 +1501,18 @@ public static class MontarNivel1
         return mesh;
     }
 
+    /// <summary>
+    /// Monta um arbusto de galhos finos em direções sorteadas.
+    /// </summary>
+    /// <param name="parent">Objeto pai.</param>
+    /// <param name="quantidade">Número de galhos.</param>
+    /// <param name="altura">Altura do arbusto.</param>
+    /// <param name="mat">Nome do material.</param>
+    /// <param name="seed">Semente do sorteio.</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Cria cilindros finos com inclinação e direção sorteadas, todos saindo da base.
+    /// </remarks>
     static void Galhos(Transform parent, int quantidade, float altura, string mat, int seed)
     {
         var r = new System.Random(seed);
@@ -1231,6 +1524,17 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Monta uma engrenagem com um disco e dentes ao redor.
+    /// </summary>
+    /// <param name="parent">Objeto pai.</param>
+    /// <param name="raio">Raio do disco.</param>
+    /// <param name="dentes">Número de dentes.</param>
+    /// <param name="mat">Nome do material.</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Cria um cilindro achatado em pé e distribui cubos pequenos em círculo como dentes.
+    /// </remarks>
     static void Engrenagem(Transform parent, float raio, int dentes, string mat)
     {
         P(parent, PrimitiveType.Cylinder, new Vector3(0, raio + 0.1f, 0), new Vector3(raio * 2f, 0.1f, raio * 2f), new Vector3(90, 0, 0), mat);
@@ -1242,6 +1546,23 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Cria uma peça em forma de rosca (toro), como um pneu ou um volante de válvula.
+    /// </summary>
+    /// <param name="parent">Objeto pai.</param>
+    /// <param name="name">Nome da peça e da malha.</param>
+    /// <param name="R">Raio maior (do centro ao meio do tubo).</param>
+    /// <param name="r">Raio menor (espessura do tubo).</param>
+    /// <param name="mat">Nome do material.</param>
+    /// <param name="pos">Posição local.</param>
+    /// <param name="euler">Rotação local em graus.</param>
+    /// <param name="collider">false para não criar collider.</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Gera os vértices percorrendo dois ângulos (em volta do anel e em volta do tubo).
+    /// 2. Liga os vértices em triângulos, salva a malha e monta o objeto.
+    /// 3. Se pedido, adiciona um Mesh Collider convexo.
+    /// </remarks>
     static void Toro(Transform parent, string name, float R, float r, string mat, Vector3 pos, Vector3 euler, bool collider = true)
     {
         int seg = 20, lados = 8;
@@ -1276,6 +1597,17 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Calcula um ponto na superfície de um toro.
+    /// </summary>
+    /// <param name="R">Raio maior.</param>
+    /// <param name="r">Raio menor.</param>
+    /// <param name="a">Ângulo em volta do anel (radianos).</param>
+    /// <param name="b">Ângulo em volta do tubo (radianos).</param>
+    /// <returns>Vector3: o ponto na superfície.</returns>
+    /// <remarks>
+    /// Aplica a equação paramétrica do toro.
+    /// </remarks>
     static Vector3 TP(float R, float r, float a, float b)
     {
         return new Vector3((R + r * Mathf.Cos(b)) * Mathf.Cos(a), r * Mathf.Sin(b), (R + r * Mathf.Cos(b)) * Mathf.Sin(a));
@@ -1284,6 +1616,15 @@ public static class MontarNivel1
     // ------------------------------------------------------------------ terreno
 
     // Meia-largura do vale (m) ao longo de Z.
+    /// <summary>
+    /// Diz a meia-largura do vale em cada ponto do comprimento do nível.
+    /// </summary>
+    /// <param name="z">Posição ao longo do vale, em metros.</param>
+    /// <returns>float: metade da largura do vale nesse ponto.</returns>
+    /// <remarks>
+    /// Define o formato dos setores: plataforma larga, saída estreita com a barricada, ravina estreita,
+    /// leito seco largo e a base da represa, com transições suaves entre eles.
+    /// </remarks>
     static float MeiaLargura(float z)
     {
         if (z < 34f) return 10f;
@@ -1296,6 +1637,15 @@ public static class MontarNivel1
     }
 
     // Altura do chão (m) no meio do vale.
+    /// <summary>
+    /// Diz a altura do chão no meio do vale em cada ponto do comprimento.
+    /// </summary>
+    /// <param name="z">Posição ao longo do vale, em metros.</param>
+    /// <returns>float: altura do chão em metros.</returns>
+    /// <remarks>
+    /// Cria o degrau do tutorial de pulo, a descida da plataforma para a ravina, o leito rebaixado
+    /// e a subida para a represa, usando Smooth nas rampas.
+    /// </remarks>
     static float Piso(float z)
     {
         if (z < 20f) return 9.2f;                              // onde o robô nasce
@@ -1308,12 +1658,31 @@ public static class MontarNivel1
         return 5f;
     }
 
+    /// <summary>
+    /// Suaviza uma interpolação (curva smoothstep).
+    /// </summary>
+    /// <param name="t">Valor entre 0 e 1.</param>
+    /// <returns>float: o valor suavizado, que começa e termina devagar.</returns>
+    /// <remarks>
+    /// Limita t entre 0 e 1 e aplica t² · (3 − 2t).
+    /// </remarks>
     static float Smooth(float t)
     {
         t = Mathf.Clamp01(t);
         return t * t * (3f - 2f * t);
     }
 
+    /// <summary>
+    /// Calcula a altura do terreno em um ponto (x, z) do mapa.
+    /// </summary>
+    /// <param name="x">Posição lateral, em metros.</param>
+    /// <param name="z">Posição ao longo do vale, em metros.</param>
+    /// <returns>float: altura do terreno em metros.</returns>
+    /// <remarks>
+    /// 1. Parte da altura do piso naquele z e soma um pouco de ruído.
+    /// 2. Quanto mais longe do centro do vale (ou das pontas), mais sobe em direção ao topo do paredão.
+    /// 3. Deixa o degrau do pulo sem ruído, para ficar nítido.
+    /// </remarks>
     static float AlturaEm(float x, float z)
     {
         float piso = Piso(z);
@@ -1328,6 +1697,17 @@ public static class MontarNivel1
         return Mathf.Lerp(piso + ruido, topo, Smooth(parede));
     }
 
+    /// <summary>
+    /// Cria o terreno da Nivel1: relevo, 6 camadas de textura pintadas e material URP.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Cria um TerrainData de 100 x 60 x 240 m e preenche o mapa de alturas com AlturaEm.
+    /// 2. Cria as 6 camadas (solo árido, cascalho, rocha, lodo, seixos de rio, grama seca).
+    /// 3. Pinta cada ponto misturando as camadas por setor, perto das poças e pela inclinação
+    ///    (encostas íngremes viram rocha).
+    /// 4. Salva o TerrainData como asset, cria o objeto Terreno e aplica o material URP de terreno.
+    /// </remarks>
     static void CriarTerreno()
     {
         var td = new TerrainData();
@@ -1409,6 +1789,20 @@ public static class MontarNivel1
         GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic | StaticEditorFlags.OccluderStatic | StaticEditorFlags.OccludeeStatic);
     }
 
+    /// <summary>
+    /// Gera a textura de uma camada do terreno e cria o TerrainLayer correspondente.
+    /// </summary>
+    /// <param name="name">Nome da camada.</param>
+    /// <param name="a">Cor clara.</param>
+    /// <param name="b">Cor escura.</param>
+    /// <param name="freq">Frequência do ruído (tamanho dos detalhes).</param>
+    /// <param name="seed">Semente do sorteio.</param>
+    /// <returns>TerrainLayer: a camada pronta para o terreno.</returns>
+    /// <remarks>
+    /// 1. Pinta uma imagem 256x256 com ruído Perlin que se repete sem emenda.
+    /// 2. No solo árido, desenha fendas escuras; nas outras, acrescenta granulado.
+    /// 3. Salva o PNG, cria ou atualiza o TerrainLayer e define o tamanho da repetição e a suavidade.
+    /// </remarks>
     static TerrainLayer Camada(string name, Color a, Color b, float freq, int seed)
     {
         string texPath = TexDir + "/Terreno_" + name + ".png";
@@ -1467,6 +1861,15 @@ public static class MontarNivel1
         new Vector2(60f, 146f), new Vector2(40f, 152f), new Vector2(54f, 160f)
     };
 
+    /// <summary>
+    /// Diz a altura do terreno já criado em um ponto (x, z).
+    /// </summary>
+    /// <param name="x">Posição lateral.</param>
+    /// <param name="z">Posição ao longo do vale.</param>
+    /// <returns>float: altura do chão em coordenadas do mundo.</returns>
+    /// <remarks>
+    /// Usa Terrain.SampleHeight, somando a posição do terreno.
+    /// </remarks>
     static float Chao(float x, float z)
     {
         return terrain.SampleHeight(new Vector3(x, 0, z)) + terrain.transform.position.y;
@@ -1474,6 +1877,15 @@ public static class MontarNivel1
 
     // --------------------------------------------------------------------- cena
 
+    /// <summary>
+    /// Apaga da cena os objetos que o script gerou numa execução anterior.
+    /// </summary>
+    /// <param name="scene">Cena aberta (Nivel1).</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Remove só os objetos da raiz cujos nomes estão na lista GeneratedRoots,
+    /// para o menu poder ser rodado de novo sem duplicar nada.
+    /// </remarks>
     static void LimparGerados(UnityEngine.SceneManagement.Scene scene)
     {
         foreach (var go in scene.GetRootGameObjects())
@@ -1482,6 +1894,20 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Coloca uma cópia de um prefab de cenário apoiada no terreno.
+    /// </summary>
+    /// <param name="nome">Nome do prefab de cenário.</param>
+    /// <param name="grupo">Objeto do setor que vai agrupar a cópia.</param>
+    /// <param name="x">Posição lateral.</param>
+    /// <param name="z">Posição ao longo do vale.</param>
+    /// <param name="rotY">Rotação em torno do eixo vertical.</param>
+    /// <param name="escala">Escala uniforme.</param>
+    /// <param name="afundar">Quanto enterrar no chão, para não flutuar.</param>
+    /// <returns>GameObject: a cópia colocada.</returns>
+    /// <remarks>
+    /// Instancia o prefab (mantendo o vínculo), põe na altura do chão daquele ponto e aplica rotação e escala.
+    /// </remarks>
     static GameObject Colocar(string nome, Transform grupo, float x, float z, float rotY, float escala = 1f, float afundar = 0.05f)
     {
         var go = (GameObject)PrefabUtility.InstantiatePrefab(prefabs[nome], grupo);
@@ -1491,9 +1917,34 @@ public static class MontarNivel1
         return go;
     }
 
+    /// <summary>
+    /// Sorteia um número real entre a e b.
+    /// </summary>
+    /// <param name="a">Mínimo.</param>
+    /// <param name="b">Máximo.</param>
+    /// <returns>float: o número sorteado.</returns>
+    /// <remarks>
+    /// Usa o gerador rng com semente fixa, para o cenário sair sempre igual.
+    /// </remarks>
     static float R(float a, float b) => a + (float)rng.NextDouble() * (b - a);
 
-    /// Coloca enfeites espalhados perto das paredes de um setor (sem bloquear o caminho do meio).
+    /// <summary>
+    /// Espalha enfeites por um trecho de um setor, perto das paredes ou no meio.
+    /// </summary>
+    /// <param name="grupo">Objeto do setor.</param>
+    /// <param name="nomes">Prefabs a usar, em rodízio.</param>
+    /// <param name="quantos">Quantidade de cópias.</param>
+    /// <param name="z0">Início do trecho.</param>
+    /// <param name="z1">Fim do trecho.</param>
+    /// <param name="margem">Distância máxima da parede.</param>
+    /// <param name="escMin">Escala mínima.</param>
+    /// <param name="escMax">Escala máxima.</param>
+    /// <param name="noMeio">true para espalhar pelo meio do caminho.</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Para cada cópia, sorteia um z no trecho, um lado do vale e uma distância da parede,
+    /// e chama Colocar com rotação e escala sorteadas. Assim o caminho do meio fica livre.
+    /// </remarks>
     static void Enfeitar(Transform grupo, string[] nomes, int quantos, float z0, float z1, float margem, float escMin = 0.8f, float escMax = 1.3f, bool noMeio = false)
     {
         for (int i = 0; i < quantos; i++)
@@ -1507,6 +1958,20 @@ public static class MontarNivel1
         }
     }
 
+    /// <summary>
+    /// Monta os 4 setores da Nivel1 e liga o SIstemaDeJogo, a Torre, os spawns, o som e a névoa.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Setor 1: arco de entrada, falésias, drone ARIA e a barricada de caixotes leves do tutorial.
+    /// 2. Setor 2: paredões, estruturas e os bloqueios com física (contêineres, pedras, tambores).
+    /// 3. Setor 3: as 6 poças de Lodo com fumaça e placas, a calha seca, sucata, fauna e easter eggs.
+    /// 4. Setor 4: comporta, pilares, passarela, a AreaCanal com os 3 entulhos e a Torre com o modelo,
+    ///    o console e o EffectPoint, ligando partícula, som e a regra do canal no PurifierTower.
+    /// 5. Cria os 12 SpawnPoint_XX nos Setores 2 e 3, a 0,5 m do chão.
+    /// 6. Instancia o SIstemaDeJogo, põe o Player no Setor 1 e liga partícula, sons e os pontos de spawn.
+    /// 7. Cria o som ambiente, as paredes invisíveis de limite, remove a câmera padrão e liga a névoa do Lighting.
+    /// </remarks>
     static void MontarCena()
     {
         var setor1 = new GameObject("Setor1_Despertar").transform;
@@ -1655,7 +2120,7 @@ public static class MontarNivel1
         {
             var e = Colocar("Pedra_Entulho_Fisica", setor4, x, 176f, R(0, 360), 1.1f, 0f);
             e.name = "Entulho_Canal_" + bloqueios.Count;
-            e.GetComponent<Rigidbody>().mass = 8f;
+            e.GetComponent<Rigidbody>().mass = 3f; // leve o bastante para o Pulso Cinético tirar do canal
             bloqueios.Add(e);
         }
 
@@ -1750,6 +2215,16 @@ public static class MontarNivel1
         RenderSettings.fogColor = new Color(0.62f, 0.60f, 0.48f);
     }
 
+    /// <summary>
+    /// Preenche um campo de um componente pelo nome, como se fosse arrastado no Inspector.
+    /// </summary>
+    /// <param name="componente">Componente que tem o campo.</param>
+    /// <param name="campo">Nome do campo no script.</param>
+    /// <param name="valor">Objeto ou asset a colocar no campo.</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Abre o componente como SerializedObject, acha o campo e aplica o valor. Se algo não existir, não faz nada.
+    /// </remarks>
     static void Ligar(UnityEngine.Object componente, string campo, UnityEngine.Object valor)
     {
         if (componente == null) return;
@@ -1760,6 +2235,16 @@ public static class MontarNivel1
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 
+    /// <summary>
+    /// Cria uma parede invisível de limite (só collider).
+    /// </summary>
+    /// <param name="parent">Objeto que agrupa os limites.</param>
+    /// <param name="pos">Posição da parede.</param>
+    /// <param name="size">Tamanho da caixa.</param>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Cria um objeto vazio com BoxCollider, sem renderer, para o jogador não sair do mapa.
+    /// </remarks>
     static void Parede(Transform parent, Vector3 pos, Vector3 size)
     {
         var go = new GameObject("Limite");
@@ -1770,6 +2255,15 @@ public static class MontarNivel1
 
     // ------------------------------------------------------ lista para o Apêndice B
 
+    /// <summary>
+    /// Lista no Console os assets diferentes usados na cena aberta (menu EcoScrapper → Listar assets).
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// 1. Percorre os objetos da cena que são cópias de prefab.
+    /// 2. Conta quantas vezes cada prefab de origem aparece.
+    /// 3. Mostra no Console o total de assets diferentes e a lista, usada para preencher o Apêndice B.
+    /// </remarks>
     [MenuItem("EcoScrapper/Listar assets da Nivel1 (Apêndice B)")]
     public static void ListarAssets()
     {
