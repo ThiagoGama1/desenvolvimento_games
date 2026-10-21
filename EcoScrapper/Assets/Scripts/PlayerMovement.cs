@@ -10,22 +10,26 @@ public class PlayerMovement : MonoBehaviour
     public float turnSpeed = 150f;
     public float jumpForce = 6f;
     public Animator animator;
+    public float fallLimitY = -1f;      // abaixo desta altura, o jogador caiu do mapa e volta ao início
 
     private Rigidbody playerRb;
     private bool isOnGround = true;
+    private Vector3 startPosition;
 
     /// <summary>
     /// Pega o Rigidbody do jogador quando o jogo começa.
     /// </summary>
     /// <returns>void (sem retorno).</returns>
     /// <remarks>
-    /// Guarda a referência ao Rigidbody e trava a rotação física,
-    /// para o robô não tombar ao bater em algo.
+    /// Guarda a referência ao Rigidbody, trava a rotação física (para o robô
+    /// não tombar ao bater em algo) e memoriza a posição inicial, usada para
+    /// trazer o jogador de volta se ele cair do mapa.
     /// </remarks>
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
         playerRb.freezeRotation = true;
+        startPosition = transform.position;
     }
 
     /// <summary>
@@ -33,19 +37,30 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     /// <returns>void (sem retorno).</returns>
     /// <remarks>
-    /// 1. W/S movem para frente e para trás com Translate (Shift corre).
+    /// 0. Se o jogador caiu abaixo de fallLimitY, volta para o ponto inicial.
+    /// 1. W/S movem para frente e para trás com Translate (Shift corre),
+    ///    desde que não haja uma parede no caminho (ver CanMove).
     /// 2. A/D giram o robô com Rotate.
     /// 3. Espaço aplica AddForce para cima, se estiver no chão.
     /// 4. Envia a velocidade e o estado do chão para o Animator.
     /// </remarks>
     void Update()
     {
+        if (transform.position.y < fallLimitY)
+        {
+            Respawn();
+        }
+
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
         float currentSpeed = isRunning ? runSpeed : speed;
 
-        transform.Translate(Vector3.forward * Time.deltaTime * currentSpeed * verticalInput);
+        Vector3 moveStep = transform.forward * verticalInput * currentSpeed * Time.deltaTime;
+        if (CanMove(moveStep))
+        {
+            transform.Translate(moveStep, Space.World);
+        }
         transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
 
         if (Input.GetKeyDown(KeyCode.Space) && isOnGround)
@@ -65,6 +80,60 @@ public class PlayerMovement : MonoBehaviour
             animator.SetFloat("Speed", animSpeed);
             animator.SetBool("IsGrounded", isOnGround);
         }
+    }
+
+    /// <summary>
+    /// Verifica se o jogador pode se mover sem entrar dentro de uma parede.
+    /// </summary>
+    /// <param name="moveStep">Deslocamento que o jogador quer fazer neste frame.</param>
+    /// <returns>bool: true se pode mover; false se há uma parede fixa no caminho.</returns>
+    /// <remarks>
+    /// O Translate move o robô sem consultar a física. Sem esta verificação, ao
+    /// andar contra uma parede ele entra nela um pouco a cada frame: treme e, no
+    /// terreno, pode até atravessar a parede e cair por baixo do mapa.
+    /// 1. Se não há deslocamento, não precisa mover.
+    /// 2. Usa Rigidbody.SweepTest: "arrasta" o formato da cápsula na direção do
+    ///    movimento e verifica se ela bateria em algo (com uma folga de 5 cm).
+    /// 3. Se bater numa superfície íngreme (parede, normal com y menor que 0.5)
+    ///    que não tem física, bloqueia o movimento.
+    /// 4. Se bater em algo com Rigidbody (caixote, barril), deixa mover para empurrar.
+    ///    Se bater numa rampa (normal apontando para cima), deixa mover para subir.
+    /// </remarks>
+    bool CanMove(Vector3 moveStep)
+    {
+        if (moveStep.sqrMagnitude < 0.000001f)
+        {
+            return false;
+        }
+
+        if (playerRb.SweepTest(moveStep.normalized, out RaycastHit hit, moveStep.magnitude + 0.05f, QueryTriggerInteraction.Ignore))
+        {
+            bool isWall = hit.normal.y < 0.5f;
+            bool isPushable = hit.rigidbody != null && !hit.rigidbody.isKinematic;
+
+            if (isWall && !isPushable)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Traz o jogador de volta ao ponto inicial depois de cair do mapa.
+    /// </summary>
+    /// <returns>void (sem retorno).</returns>
+    /// <remarks>
+    /// Rede de segurança: recoloca o robô na posição memorizada no Start,
+    /// zera a velocidade da queda e avisa no Console.
+    /// </remarks>
+    void Respawn()
+    {
+        transform.position = startPosition;
+        playerRb.linearVelocity = Vector3.zero;
+        isOnGround = false;
+        Debug.Log("Jogador caiu do mapa e voltou ao ponto inicial.");
     }
 
     /// <summary>
