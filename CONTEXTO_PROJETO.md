@@ -190,11 +190,11 @@ Testa tudo com cubos no lugar dos modelos até as partes dos outros ficarem pron
 2. Empurrão por contato (física da Unity, sem código) e Pulso Cinético (`AddForce` + `AddTorque`, `Physics.OverlapSphere`). **`InteractionController.cs` pronto e testado em 2026-10-20.** Campos opcionais no Inspector: `impactParticlePrefab` (prefab de pedrinhas do Arthur) e `pulseSound`.
 3. `SpawnManager` (vetor de prefabs + `Random.Range` + spawn por função). **Pronto e testado em 2026-10-20.** Filtros e sucatas dividem a mesma lista de pontos livres (`usedPoints`), então nenhum item nasce em cima do outro; pode usar os mesmos pontos nos dois campos do Inspector.
 4. Coleta de Bio-Filtros e sucata. **`PlayerInventory.cs` pronto e testado em 2026-10-20** (no `Player`; conta `filtersCollected` e `scrapCollected` pela tag ao encostar em trigger; `HasAllFilters()` para a torre). Por enquanto só conta e mostra no Console: o HUD e a vitória vêm com o `UIManager` e a `PurifierTower`.
-5. Torre: depositar filtros, tecla E no console, condição de vitória
-6. HP, dano do lodo, dano de detrito e game over
+5. Torre: **`PurifierTower.cs` pronto e testado em 2026-10-21.** Fica num objeto com collider **Is Trigger** (a área do console) e tag `PurifierTrigger`. Com os 5 filtros, E ativa: cria `purificationEffectPrefab`, toca `activationSound`, desliga a névoa (`RenderSettings.fog`) e chama `GameManager.Victory()`. Regra opcional de entulho: `blockingDebris` + `channelArea` (se vazios, é ignorada). Se faltar algo, avisa no Console.
+6. HP: **`PlayerHealth.cs` pronto e testado em 2026-10-21** (no `Player`). Lodo: 10 HP/s via `OnTriggerStay`, com conferência de sobreposição real (`bounds.Intersects`) para ignorar avisos falsos da Unity. Detrito: 25 HP quando um `HeavyDebris` **em movimento** (velocidade do próprio Rigidbody > 5) bate no robô. Cada dano aparece no Console com a causa. `Heal()` pronto para o cheat. Campo opcional `deathEffectPrefab`.
 7. Rotação dos filtros (`Transform.Rotate`): **`Rotator.cs` pronto em 2026-10-20**, usado no `BioFiltro` e na `SucataCoin`. Válvula da comporta: pendente (opcional).
-8. Ligar HUD, painéis e botões do Rafael aos scripts (`SceneManager.LoadScene` no Reiniciar)
-9. Extras se sobrar tempo: Eco-Timer, emotes e cheat E-C-O
+8. HUD e estado do jogo: **`GameManager.cs` e `UIManager.cs` prontos e testados em 2026-10-21.** `GameManager` (objeto próprio, `GameManager.Instance`): Esc pausa, Eco-Timer de 180 s se ligado no menu, `Victory()` (espera 2 s e mostra a tela), `GameOver()`, pontuação (1000 + 100 por sucata + 10 por segundo restante no Eco-Timer); desliga `PlayerMovement` e `InteractionController` (vetor `playerControls`) quando o jogo para. `UIManager` (no `HUD_Canvas`): acha os elementos pelos nomes do contrato com `transform.Find`, atualiza textos e barra, liga o `BotaoContinuar`. Reiniciar e Menu continuam com o `MainMenuController` do Rafael.
+9. Extras: Eco-Timer ✅ (no `GameManager`). Cheat E-C-O e emotes: pendentes, opcionais.
 
 ### Dependências entre as partes
 O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para fazer e testar com cubos na `Cena_Teste_Thiago`; o que vem dos outros só é encaixado depois, arrastando no Inspector, sem mudar código.
@@ -203,9 +203,9 @@ O que cada script do Thiago precisa dos outros. "Não" quer dizer que dá para f
 |---|---|---|---|
 | `SpawnManager` | Pontos `SpawnPoint_01...` na `Nivel1` | Arthur | Não (testa com objetos vazios próprios) |
 | `Rotator` + `PlayerInventory` | Nada | | Não |
-| `PurifierTower` | Modelo da torre e prefab `Particula_Purificacao` | Arthur | Não (testa com cubo) |
-| `PlayerHealth` | Poças de lodo com `ToxicSlime` | Arthur | Não (testa com cubo marcado) |
-| `GameManager` + `UIManager` | Prefab `HUD_Canvas` com textos, painéis e botões | Rafael | **Sim**, a parte de UI só fecha com o canvas |
+| `PurifierTower` | Modelo da torre e prefab `Particula_Purificacao` | Arthur | ✅ Script pronto; falta só o visual e a partícula |
+| `PlayerHealth` | Poças de lodo com `ToxicSlime` | Arthur | ✅ Script pronto; falta só as poças reais na `Nivel1` |
+| `GameManager` + `UIManager` | Prefab `HUD_Canvas` com textos, painéis e botões | Rafael | ✅ Resolvido em 2026-10-21 |
 | Animações no robô | Prefab `ScrapE` com `ScrapE_Animator` | Rafael | ✅ Resolvido em 2026-10-20: `ScrapE` integrado ao `Player` na `Cena_Teste_Thiago` |
 | Partícula e som do pulso | Prefab `Particula_Pedrinhas` e um som | Arthur | Não (1 minuto: arrastar no `InteractionController`) |
 
@@ -366,6 +366,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [x] `PlayerMovement.cs` pronto e testado
 - [x] `InteractionController.cs` (Pulso Cinético) pronto e testado
 - [x] `ScrapE` integrado ao `Player` na `Cena_Teste_Thiago`, com animações funcionando
+- [x] `PurifierTower.cs`, `PlayerHealth.cs`, `GameManager.cs` e `UIManager.cs` prontos e testados (2026-10-21) na `Cena_Teste_Thiago`: HUD, pausa, Continuar, Game Over no lodo, Reiniciar, Menu e vitória na torre funcionando. **Todo o código da lista do Thiago está pronto.**
 - [x] `SpawnManager.cs`, `Rotator.cs` e `PlayerInventory.cs` prontos e testados; prefabs `BioFiltro` (tag `EcoItem`, verde) e `SucataCoin` (tag `ScrapCoin`) em `Prefabs/Gameplay`; 8 pontos de spawn na cena de teste
 - [x] `ScrapE.prefab` pronto em `Prefabs/Personagem` (tag `Player`, `Apply Root Motion` desligado, malha 3D articulada amarela com visor LED azul)
 - [x] `ScrapE_Animator.controller` + 5 animações (`Idle`, `Walking`, `Running`, `Jump`, `FallingIdle`) e utilitário `MixamoSetupUtility.cs`
@@ -381,7 +382,8 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - [ ] Arthur e Rafael clonarem e abrirem o projeto na 6000.0.8f1
 - [ ] Validar assets de terceiros com o professor
 - [ ] Apagar `Assets/TutorialInfo` e `Assets/Readme.asset` (opcional, só conteúdo do template)
-- [ ] Thiago (21/10): `PurifierTower`, `PlayerHealth`, `GameManager` + `UIManager`; depois junção na `Nivel1` e seção 6 do GDD
+- [ ] Thiago (21/10): prefab do sistema de jogo para a `Nivel1`, seção 6 do GDD, cheat E-C-O (opcional)
+- [ ] Junção na `Nivel1` (depende do cenário do Arthur; plano B: Thiago monta uma `Nivel1` simples)
 - [ ] Arthur: **nenhum commit até 21/10 14h**. Confirmar o andamento da `Nivel1` (é o único bloqueio da junção)
 - [ ] Arthur: tudo da seção 5 (cenário)
 - [ ] Rafael: item 7 da seção 5 (na quinta-feira: zip final e conferência do checklist da seção 2 após integração final)
@@ -398,6 +400,10 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 - **Instalação da Unity falhou com "Prompt de elevação cancelado":** a janela de permissão de administrador ficou escondida ou expirou. Clique em Tentar novamente e aceite. Se não tiver permissão de admin, troque o local de instalação no Hub (Configurações → Instalações) para uma pasta dentro do usuário.
 
 ### Programação (Thiago)
+- **Montagem de uma cena jogável** (feita na `Cena_Teste_Thiago`, repetir na `Nivel1`): `Player` com `PlayerMovement`, `InteractionController`, `PlayerInventory`, `PlayerHealth` e o `ScrapE` + `Main Camera` como filhos; `HUD_Canvas` com `UIManager` (Player Inventory e Player Health = `Player`); `EventSystem`; objeto `GameManager` (Player Inventory = `Player`, UI Manager = `HUD_Canvas`, Player Controls = `PlayerMovement` e `InteractionController` do `Player`); `SpawnManager` com os pontos; torre com trigger + tag `PurifierTrigger` + `PurifierTower`.
+- **Objetos criados pelo menu GameObject nascem onde a vista da cena está olhando**, não no chão (já aconteceu com o `Lodo`, que ficou flutuando a 5 m). Sempre conferir a Position depois de criar.
+- **Arrastar um componente para outro objeto no Inspector:** travar o Inspector do destino no cadeado e abrir o objeto de origem com botão direito → **Properties...**
+- **Play roda a cena aberta no editor**, não a primeira do build. Para testar o fluxo completo, abrir a `MenuPrincipal` antes do Play. O **Iniciar** carrega a `Nivel1`.
 - **UI usa o `Text` antigo da Unity** (`UnityEngine.UI.Text`), não TextMeshPro. Os scripts que mexem no HUD devem usar esse tipo.
 - **`MainMenuController` (Rafael) já cuida de:** botões Reiniciar e Menu Principal do HUD (`ReiniciarJogo()`, `CarregarMenuPrincipal()`), tecla **R** para reiniciar, `Time.timeScale` voltando a 1 ao trocar de cena, e a escolha do Eco-Timer na variável estática `MainMenuController.useEcoTimer`. O `UIManager` não deve repetir isso; falta só o `BotaoContinuar`, a pausa com Esc e atualizar os textos.
 - **`Nivel1` precisa de um `EventSystem`** (GameObject → UI → Event System) para os botões do HUD funcionarem.
@@ -444,6 +450,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Thiago | `PurifierTower`, `PlayerHealth`, `GameManager` e `UIManager` prontos e testados; todo o código do Thiago concluído; notas de montagem de cena na seção 10
 - 2026-10-21 | Thiago | Status atualizado: `SpawnManager` (pontos compartilhados entre filtros e sucatas), `Rotator`, `PlayerInventory` e integração do `ScrapE` prontos; Arthur sem commits até agora
 - 2026-10-20 | Thiago | Parte do Rafael testada na Unity; `ScrapE.prefab` corrigido (ID reservado 100100000 e tag Player); alerta sobre arquivos gerados fora do editor na seção 10
 - 2026-10-20 | Thiago | Branch do Rafael revisada e mesclada na `main`; Eco-Timer fixado em 3 minutos (D18); GDD revisado movido para a raiz do repositório; notas de integração com o `MainMenuController` e o `HUD_Canvas`
