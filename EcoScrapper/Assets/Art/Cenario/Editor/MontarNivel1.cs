@@ -1173,6 +1173,10 @@ public static class MontarNivel1
     /// 2. Remove juntas, scripts, Rigidbody e LOD que o pacote traga.
     /// 3. Mede o tamanho pelos renderers, escala para o tamanho pedido e põe a base em y = 0.
     /// 4. Garante collider: cria Mesh Colliders convexos se o modelo não tiver nenhum.
+    ///    Exceção: as falésias do Low Poly Cliff Pack são cascas abertas (só a face da
+    ///    frente). Um collider convexo fecharia o vão por trás e viraria uma parede
+    ///    invisível, então nelas o collider segue o formato real (não convexo). Elas
+    ///    são fixas, sem Rigidbody, e por isso podem usar collider não convexo.
     /// 5. Prende o modelo como filho do objeto recebido.
     /// </remarks>
     static bool ModeloLoja(Transform parent, string caminho, float tamanho)
@@ -1204,6 +1208,7 @@ public static class MontarNivel1
         go.transform.localScale = go.transform.localScale * k;
         go.transform.position = new Vector3(-b.center.x * k, -b.min.y * k, -b.center.z * k);
 
+        bool convexo = !caminho.Contains("LowPolyCliffPack");
         if (go.GetComponentInChildren<Collider>() == null)
         {
             foreach (var mf in go.GetComponentsInChildren<MeshFilter>())
@@ -1211,12 +1216,12 @@ public static class MontarNivel1
                 if (mf.sharedMesh == null) continue;
                 var mc = mf.gameObject.AddComponent<MeshCollider>();
                 mc.sharedMesh = mf.sharedMesh;
-                mc.convex = true;
+                mc.convex = convexo;
             }
         }
         else
         {
-            foreach (var mc in go.GetComponentsInChildren<MeshCollider>()) mc.convex = true;
+            foreach (var mc in go.GetComponentsInChildren<MeshCollider>()) mc.convex = convexo;
         }
 
         go.transform.SetParent(parent, true);
@@ -1232,7 +1237,10 @@ public static class MontarNivel1
     /// 2. Lê das propriedades salvas a textura, a cor, o normal map e o recorte de alpha
     ///    (funciona mesmo quando o shader original não veio no pacote).
     /// 3. Troca o shader para URP/Lit e reaplica esses valores; folhas e recortes ganham alpha clip.
-    /// 4. Salva os materiais alterados.
+    /// 4. Os materiais do Low Poly Cliff Pack passam a desenhar as duas faces
+    ///    (Render Face = Both), porque as falésias só têm a face da frente e, vistas
+    ///    de trás, ficariam transparentes.
+    /// 5. Salva os materiais alterados.
     /// </remarks>
     static void ConverterMateriaisDaLoja()
     {
@@ -1243,6 +1251,12 @@ public static class MontarNivel1
         {
             var mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
             if (mat == null || mat.shader == null) continue;
+            if (AssetDatabase.GetAssetPath(mat).Contains("LowPolyCliffPack"))
+            {
+                mat.SetFloat("_Cull", 0f);
+                mat.doubleSidedGI = true;
+                EditorUtility.SetDirty(mat);
+            }
             string sh = mat.shader.name;
             if (sh.StartsWith("Universal Render Pipeline") || sh.StartsWith("Shader Graphs")) continue;
             if (sh.Contains("Particle")) continue;

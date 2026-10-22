@@ -21,7 +21,6 @@ public class MainMenuController : MonoBehaviour
     /// Inicializa o estado do menu quando a cena começa, destravando o tempo
     /// e atualizando o texto do modo Eco-Timer se houver referência configurada.
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Garante que Time.timeScale volte para 1f caso o jogador tenha vindo de uma tela pausada.
@@ -40,7 +39,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Gira continuamente o robô da vitrine 3D no menu e verifica o atalho de reinício rápido (tecla R).
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Se roboVitrine estiver atribuído no Inspector, aplica Transform.Rotate no eixo Y (Vector3.up) a cada frame.
@@ -62,7 +60,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Inicia a partida carregando a cena principal do jogo (Nivel1).
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Garante que Time.timeScale esteja em 1f.
@@ -77,7 +74,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Retorna para a cena do Menu Principal a partir de qualquer tela.
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Restaura Time.timeScale para 1f para não manter o jogo congelado.
@@ -92,7 +88,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Reinicia a cena atual do zero, restaurando o estado inicial da fase.
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Restaura Time.timeScale para 1f.
@@ -107,7 +102,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Abre ou fecha o painel de controles e instruções no Menu Principal.
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Verifica se painelControles foi atribuído no Inspector.
@@ -124,7 +118,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Liga ou desliga a opção de desafio Eco-Timer (limite de 3 minutos) e atualiza o texto na interface.
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Inverte o valor booleano estático useEcoTimer.
@@ -143,7 +136,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>
     /// Encerra a execução do jogo (ou registra mensagem no Console quando testado no Editor).
     /// </summary>
-    /// <param name="nenhum">Esta função não recebe parâmetros.</param>
     /// <returns>void, sem retorno.</returns>
     /// <remarks>
     /// 1. Exibe mensagem no Console com Debug.Log confirmando o acionamento do botão Sair.

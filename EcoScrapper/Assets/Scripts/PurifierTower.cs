@@ -55,9 +55,18 @@ public class PurifierTower : MonoBehaviour
     /// Verifica a cada frame se o jogador apertou E perto do console.
     /// </summary>
     /// <returns>void (sem retorno).</returns>
-    /// <remarks>Só tenta ativar se o jogador estiver no alcance e a torre ainda não foi ativada.</remarks>
+    /// <remarks>
+    /// Só tenta ativar se o jogador estiver no alcance e a torre ainda não foi ativada.
+    /// Com o jogo pausado (Time.timeScale = 0) a tecla é ignorada, para a vitória
+    /// não acontecer por trás do painel de pausa.
+    /// </remarks>
     void Update()
     {
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+
         if (playerInRange && !isPurified && Input.GetKeyDown(KeyCode.E))
         {
             TryActivate();

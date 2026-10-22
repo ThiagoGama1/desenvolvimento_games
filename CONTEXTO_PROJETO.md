@@ -467,6 +467,7 @@ Se der conflito, quase sempre vai ser num desses arquivos. Mandar o print do err
 
 Formato: `AAAA-MM-DD | quem | o que mudou`. A linha mais nova vai no topo.
 
+- 2026-10-21 | Thiago | Revisão final antes da apresentação: GDD corrigido onde descrevia coisas que ainda não existem (movimento, giro do robô, válvula, faíscas no Game Over, sucata dos contêineres, tela de Opções), comentários desatualizados nos scripts acertados e a torre não ativa mais com o jogo pausado
 - 2026-10-21 | Thiago | Teste completo da `Nivel1`; ajustes (pedras do canal 3 kg, arco z = 0, explosão menor, painel de vitória mais transparente, `SweepTest` + `Respawn` no `PlayerMovement`); `MontarNivel1.cs` documentado e sincronizado; GDD final com a lista real de assets e a seção 10 (Estado da Implementação)
 - 2026-10-21 | Arthur | Cenário da `Nivel1` montado pelo script de editor `Art/Cenario/Editor/MontarNivel1.cs` (menu EcoScrapper → Montar Nivel1); 101 assets diferentes, 8 pacotes grátis da Asset Store, sons e partículas; Apêndice B do `GUIA_ARTHUR.md` preenchido. Atenção: rodar o menu de novo recria os prefabs de `Prefabs/Cenario` e a cena
 - 2026-10-21 | Thiago | Criado `GUIA_ARTHUR.md` (guia de tarefa do cenário da `Nivel1`); corrigida a orientação das partículas criadas pelo código (Play On Awake ligado)

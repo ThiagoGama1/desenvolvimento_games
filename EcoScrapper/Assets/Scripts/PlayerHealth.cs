@@ -118,7 +118,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Recupera HP do jogador (usado pelo cheat E-C-O, se for implementado).
+    /// Recupera HP do jogador (usado pelo cheat E-C-O).
     /// </summary>
     /// <param name="amount">Quantidade de HP a recuperar.</param>
     /// <returns>void (sem retorno).</returns>

@@ -62,7 +62,7 @@ public class PlayerInventory : MonoBehaviour
     /// </summary>
     /// <returns>bool: true se filtersCollected chegou em filtersRequired.</returns>
     /// <remarks>
-    /// Será usado pela Torre Purificadora para decidir se pode ser ativada.
+    /// Usado pela Torre Purificadora para decidir se pode ser ativada.
     /// </remarks>
     public bool HasAllFilters()
     {
